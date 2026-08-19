@@ -1,0 +1,2025 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>F Klavye Akademisi — Sözlü Mülakat Simülasyonu v3</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy: #0b1f38;
+    --navy-deep: #071426;
+    --navy-panel: #102a4a;
+    --gold: #c9a24b;
+    --gold-bright: #e6c778;
+    --teal: #2e9a94;
+    --teal-dim: #1c5f5c;
+    --cream: #f4efe1;
+    --cream-dim: #cfc7ae;
+    --wrong: #c9614b;
+    --line: rgba(201,162,75,0.25);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(1100px 600px at 15% -10%, rgba(46,154,148,0.18), transparent 60%),
+      radial-gradient(900px 500px at 100% 0%, rgba(201,162,75,0.14), transparent 55%),
+      var(--navy);
+    color:var(--cream);
+    font-family:'Inter', sans-serif;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:32px 16px;
+  }
+
+  .wrap{ width:100%; max-width:720px; }
+
+  /* ---- Header / brand ---- */
+  .brand{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:22px;
+    gap:12px;
+    flex-wrap:wrap;
+  }
+  .brand-mark{ display:flex; align-items:center; gap:12px; }
+  .key-glyph{
+    width:46px; height:46px;
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    overflow:hidden;
+    background:var(--navy-panel);
+    flex-shrink:0;
+  }
+  .key-glyph img{
+    width:100%; height:100%;
+    object-fit:cover;
+    display:block;
+  }
+  .brand-text .name{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:19px;
+    letter-spacing:0.2px;
+    color:var(--cream);
+    line-height:1.1;
+  }
+  .brand-text .slogan{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    color:var(--teal);
+    margin-top:3px;
+  }
+  .score-pill{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12.5px;
+    color:var(--cream-dim);
+    border:1px solid var(--line);
+    border-radius:100px;
+    padding:7px 14px;
+    display:flex; gap:10px;
+    background:rgba(255,255,255,0.02);
+  }
+  .score-pill b{ color:var(--gold-bright); font-weight:600; }
+  .score-pill .divider{ color:var(--line); }
+
+  /* ---- Session controls ---- */
+  .session-controls{
+    display:flex;
+    justify-content:flex-end;
+    align-items:center;
+    gap:10px;
+    margin:10px 0 18px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px;
+  }
+  .ctrl-link{
+    background:none;
+    border:none;
+    color:var(--cream-dim);
+    text-decoration:underline;
+    text-underline-offset:3px;
+    cursor:pointer;
+    padding:2px 0;
+    font-family:inherit;
+    font-size:inherit;
+  }
+  .ctrl-link:hover{ color:var(--cream); }
+  .ctrl-divider{ color:var(--line); }
+
+  /* ---- Progress ---- */
+  .progress-track{
+    height:3px;
+    width:100%;
+    background:rgba(255,255,255,0.08);
+    border-radius:2px;
+    overflow:hidden;
+    margin-bottom:26px;
+  }
+  .progress-fill{
+    height:100%;
+    background:linear-gradient(90deg, var(--teal), var(--gold));
+    border-radius:2px;
+    transition:width .35s ease;
+  }
+
+  /* ---- Card ---- */
+  .card{
+    background:linear-gradient(180deg, var(--navy-panel), var(--navy-deep));
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:38px 36px 32px;
+    position:relative;
+    overflow:hidden;
+    box-shadow:0 30px 60px -25px rgba(0,0,0,0.6);
+  }
+  .card::before{
+    content:"";
+    position:absolute; top:0; left:0; right:0; height:1px;
+    background:linear-gradient(90deg, transparent, var(--gold), transparent);
+    opacity:0.6;
+  }
+
+  .q-eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    color:var(--teal);
+    margin-bottom:14px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+  }
+  .q-eyebrow .no{ color:var(--gold-bright); }
+
+  .timer-badge{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12.5px;
+    font-weight:600;
+    letter-spacing:0.3px;
+    color:var(--teal);
+    border:1.5px solid var(--teal);
+    border-radius:100px;
+    padding:3px 12px;
+    min-width:38px;
+    text-align:center;
+    text-transform:none;
+    flex-shrink:0;
+    transition:color .2s, border-color .2s;
+  }
+  .timer-badge.warn{ color:var(--gold-bright); border-color:var(--gold); }
+  .timer-badge.danger{ color:#e2917f; border-color:var(--wrong); animation:pulseTimer 1s infinite; }
+  @keyframes pulseTimer{
+    0%,100%{ opacity:1; }
+    50%{ opacity:0.45; }
+  }
+
+  .q-text{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:26px;
+    line-height:1.32;
+    color:var(--cream);
+    margin:0 0 28px;
+  }
+
+  form{ display:flex; flex-direction:column; gap:14px; }
+
+  .input-row{
+    display:flex;
+    gap:10px;
+    align-items:stretch;
+  }
+  input[type="text"]{
+    flex:1;
+    background:rgba(255,255,255,0.04);
+    border:1.5px solid var(--line);
+    border-radius:10px;
+    padding:14px 16px;
+    font-family:'Inter', sans-serif;
+    font-size:15px;
+    color:var(--cream);
+    outline:none;
+    transition:border-color .2s, background .2s;
+  }
+  input[type="text"]::placeholder{ color:rgba(244,239,225,0.35); }
+  input[type="text"]:focus{
+    border-color:var(--teal);
+    background:rgba(255,255,255,0.06);
+  }
+  input[type="text"]:disabled{ opacity:0.7; }
+
+  button{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13px;
+    font-weight:600;
+    letter-spacing:0.5px;
+    text-transform:uppercase;
+    border-radius:10px;
+    border:none;
+    cursor:pointer;
+    padding:0 22px;
+    transition:transform .15s, filter .15s;
+  }
+  button:active{ transform:scale(0.97); }
+  .btn-submit{
+    background:linear-gradient(180deg, var(--gold-bright), var(--gold));
+    color:var(--navy-deep);
+  }
+  .btn-submit:hover{ filter:brightness(1.06); }
+  .btn-submit:disabled{ opacity:0.4; cursor:not-allowed; }
+
+  .btn-next{
+    align-self:flex-end;
+    background:transparent;
+    border:1.5px solid var(--teal);
+    color:var(--teal);
+    padding:11px 20px;
+    display:none;
+  }
+  .btn-next.show{ display:inline-flex; align-items:center; gap:8px; }
+  .btn-next:hover{ background:rgba(46,154,148,0.12); }
+
+  /* ---- Feedback ---- */
+  .feedback{
+    display:none;
+    margin-top:6px;
+    border-radius:12px;
+    padding:16px 18px;
+    border:1.5px solid;
+    animation:rise .28s ease;
+  }
+  .feedback.show{ display:block; }
+  @keyframes rise{
+    from{ opacity:0; transform:translateY(6px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+  .feedback .fb-head{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13px;
+    font-weight:600;
+    letter-spacing:0.3px;
+    display:flex;
+    align-items:center;
+    gap:9px;
+    margin-bottom:8px;
+  }
+  .feedback .fb-key{
+    width:24px; height:24px;
+    border-radius:5px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:13px;
+    flex-shrink:0;
+  }
+  .feedback .fb-answer{
+    font-size:14.5px;
+    line-height:1.55;
+    color:var(--cream-dim);
+  }
+  .feedback .fb-answer b{ color:var(--cream); font-weight:600; }
+
+  .feedback.correct{
+    background:rgba(46,154,148,0.10);
+    border-color:var(--teal);
+  }
+  .feedback.correct .fb-head{ color:var(--teal); }
+  .feedback.correct .fb-key{ background:var(--teal); color:var(--navy-deep); }
+
+  .feedback.close{
+    background:rgba(201,162,75,0.10);
+    border-color:var(--gold);
+  }
+  .feedback.close .fb-head{ color:var(--gold-bright); }
+  .feedback.close .fb-key{ background:var(--gold); color:var(--navy-deep); }
+
+  .feedback.wrong{
+    background:rgba(201,97,75,0.10);
+    border-color:var(--wrong);
+  }
+  .feedback.wrong .fb-head{ color:#e2917f; }
+  .feedback.wrong .fb-key{ background:var(--wrong); color:var(--navy-deep); }
+
+  /* ---- Footer ---- */
+  .foot-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:20px;
+  }
+  .skip-link{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:var(--cream-dim);
+    background:none;
+    border:none;
+    text-decoration:underline;
+    text-underline-offset:3px;
+    padding:0;
+    cursor:pointer;
+  }
+  .skip-link:hover{ color:var(--cream); }
+
+  /* ---- Result screen ---- */
+  .result{ display:none; text-align:center; }
+  .result.show{ display:block; }
+  .result .r-eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    color:var(--teal);
+    margin-bottom:10px;
+  }
+  .result .r-score{
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    font-size:56px;
+    color:var(--gold-bright);
+    line-height:1;
+    margin-bottom:6px;
+  }
+  .result .r-sub{
+    color:var(--cream-dim);
+    font-size:14.5px;
+    margin-bottom:28px;
+  }
+  .r-bars{ display:flex; gap:8px; justify-content:center; margin-bottom:30px; flex-wrap:wrap; }
+  .r-bar{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    padding:8px 14px;
+    border-radius:8px;
+    border:1px solid var(--line);
+  }
+  .r-bar.correct{ color:var(--teal); border-color:var(--teal); }
+  .r-bar.close{ color:var(--gold-bright); border-color:var(--gold); }
+  .r-bar.wrong{ color:#e2917f; border-color:var(--wrong); }
+
+  /* ---- Konu bazlı kırılım (final ekranı) ---- */
+  .cat-breakdown{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    text-align:left;
+    margin-bottom:28px;
+  }
+  .cat-row-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    font-size:13px;
+    margin-bottom:5px;
+  }
+  .cat-row-head .cat-name{ color:var(--cream); }
+  .cat-row-head .cat-pct{ font-family:'IBM Plex Mono', monospace; color:var(--gold-bright); font-weight:600; font-size:12.5px; }
+  .cat-bar-track{
+    height:6px;
+    border-radius:3px;
+    background:rgba(255,255,255,0.08);
+    overflow:hidden;
+  }
+  .cat-bar-fill{
+    height:100%;
+    background:linear-gradient(90deg, var(--teal), var(--gold-bright));
+    border-radius:3px;
+  }
+
+  /* ---- Tekrar çalışma listesi (checkpoint + final) ---- */
+  .review-section{
+    text-align:left;
+    margin-bottom:24px;
+  }
+  .review-section-title{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    color:var(--cream-dim);
+    margin-bottom:10px;
+  }
+  .review-list{
+    list-style:none;
+    margin:0; padding:0;
+    display:flex; flex-direction:column; gap:8px;
+    max-height:260px;
+    overflow-y:auto;
+    padding-right:4px;
+  }
+  .review-list li{
+    font-size:13.5px;
+    line-height:1.4;
+    padding:10px 12px;
+    border-radius:8px;
+    border:1px solid var(--line);
+    background:rgba(255,255,255,0.02);
+    display:flex;
+    align-items:flex-start;
+    gap:8px;
+  }
+  .review-list li .tag{
+    flex-shrink:0;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px;
+    padding:2px 7px;
+    border-radius:100px;
+    text-transform:uppercase;
+  }
+  .review-list li.wrong .tag{ background:rgba(201,97,75,0.18); color:#e2917f; }
+  .review-list li.close .tag{ background:rgba(201,162,75,0.18); color:var(--gold-bright); }
+  .review-empty{
+    font-size:13.5px;
+    color:var(--cream-dim);
+    padding:4px 0;
+  }
+  .btn-restart{
+    background:linear-gradient(180deg, var(--gold-bright), var(--gold));
+    color:var(--navy-deep);
+    padding:13px 26px;
+  }
+
+  .foot-note{
+    text-align:center;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:rgba(207,199,174,0.4);
+    margin-top:20px;
+    letter-spacing:0.5px;
+  }
+
+  /* ---- Start screen ---- */
+  .start-sub{
+    font-family:'Inter', sans-serif;
+    font-size:14.5px;
+    line-height:1.6;
+    color:var(--cream-dim);
+    margin:0 0 26px;
+  }
+  .toggle-row{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    cursor:pointer;
+    margin-bottom:28px;
+    user-select:none;
+  }
+  .toggle-row input[type="checkbox"]{
+    position:absolute;
+    opacity:0;
+    width:0; height:0;
+  }
+  .toggle-box{
+    width:42px; height:24px;
+    border-radius:100px;
+    border:1.5px solid var(--line);
+    background:rgba(255,255,255,0.04);
+    position:relative;
+    flex-shrink:0;
+    transition:background .2s, border-color .2s;
+  }
+  .toggle-box::after{
+    content:"";
+    position:absolute;
+    top:2px; left:2px;
+    width:17px; height:17px;
+    border-radius:50%;
+    background:var(--cream-dim);
+    transition:transform .2s, background .2s;
+  }
+  .toggle-row input:checked + .toggle-box{
+    background:rgba(46,154,148,0.25);
+    border-color:var(--teal);
+  }
+  .toggle-row input:checked + .toggle-box::after{
+    transform:translateX(18px);
+    background:var(--teal);
+  }
+  .toggle-label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13.5px;
+    color:var(--cream);
+  }
+  .btn-start{
+    width:100%;
+    padding:15px;
+    font-size:13.5px;
+  }
+
+  /* ---- Mülakat modu / komisyon seçenekleri ---- */
+  .option-section{ margin:0 0 22px; }
+  .option-title{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:1.2px;
+    text-transform:uppercase;
+    color:var(--cream-dim);
+    margin-bottom:9px;
+  }
+  .choice-grid{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px; }
+  .choice-grid.three{ grid-template-columns:repeat(3,minmax(0,1fr)); }
+  .choice-card{ position:relative; cursor:pointer; user-select:none; }
+  .choice-card input{ position:absolute; opacity:0; pointer-events:none; }
+  .choice-card .choice-body{
+    height:100%;
+    border:1.5px solid var(--line);
+    border-radius:11px;
+    padding:12px 13px;
+    background:rgba(255,255,255,0.025);
+    transition:border-color .2s, background .2s, transform .15s;
+  }
+  .choice-card:hover .choice-body{ border-color:rgba(230,199,120,.6); }
+  .choice-card input:checked + .choice-body{
+    border-color:var(--teal);
+    background:rgba(46,154,148,0.12);
+    box-shadow:inset 0 0 0 1px rgba(46,154,148,.12);
+  }
+  .choice-name{ font-size:13px; font-weight:700; color:var(--cream); margin-bottom:4px; }
+  .choice-desc{ font-size:11.5px; line-height:1.4; color:var(--cream-dim); }
+  .mode-note{
+    margin:-8px 0 20px;
+    border-left:2px solid var(--teal);
+    padding:8px 11px;
+    font-size:12px;
+    line-height:1.5;
+    color:var(--cream-dim);
+    background:rgba(46,154,148,.06);
+    border-radius:0 8px 8px 0;
+  }
+  .feedback.neutral{
+    background:rgba(255,255,255,0.035);
+    border-color:var(--line);
+  }
+  .feedback.neutral .fb-head{ color:var(--cream-dim); }
+  .feedback.neutral .fb-key{ background:var(--navy-panel); color:var(--gold-bright); border:1px solid var(--line); }
+  .session-badge{
+    display:inline-flex; align-items:center; gap:6px;
+    font-family:'IBM Plex Mono', monospace; font-size:10.5px;
+    color:var(--gold-bright); margin-bottom:12px;
+  }
+  .result-meta{
+    font-family:'IBM Plex Mono', monospace; font-size:11.5px; line-height:1.6;
+    color:var(--cream-dim); border:1px solid var(--line); border-radius:9px;
+    padding:10px 12px; margin:-12px 0 22px; text-align:left;
+  }
+
+
+  /* ---- V3: kişisel profil / kendini tanıt / gelişim karnesi ---- */
+  .profile-panel{
+    border:1px solid var(--line); border-radius:13px; padding:16px;
+    background:rgba(255,255,255,.025); margin:0 0 22px;
+  }
+  .profile-panel.profile-disabled{ opacity:.42; filter:saturate(.55); }
+  .profile-panel.profile-disabled::before{
+    content:'Sadece bilgi soruları seçili · profil kişisel soru üretiminde kullanılmayacak';
+    display:block; margin:0 0 12px; padding:9px 11px; border-radius:8px;
+    border:1px solid var(--line); background:rgba(255,255,255,.03);
+    color:var(--cream-dim); font-family:'IBM Plex Mono',monospace; font-size:10.5px; line-height:1.45;
+  }
+  .profile-grid{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+  .profile-field{ display:flex; flex-direction:column; gap:6px; }
+  .profile-field.full{ grid-column:1 / -1; }
+  .profile-field label{
+    font-family:'IBM Plex Mono', monospace; font-size:10.5px; letter-spacing:.4px;
+    color:var(--cream-dim);
+  }
+  .profile-field input, .profile-field select, .profile-field textarea{
+    width:100%; background:rgba(255,255,255,.04); border:1.5px solid var(--line);
+    border-radius:9px; padding:11px 12px; color:var(--cream); outline:none;
+    font-family:'Inter',sans-serif; font-size:13px;
+  }
+  .profile-field textarea{ min-height:70px; resize:vertical; line-height:1.45; }
+  .profile-field input:focus, .profile-field select:focus, .profile-field textarea:focus{ border-color:var(--teal); }
+  .profile-field select option{ color:#111; }
+  .privacy-note{ font-size:10.5px; color:rgba(207,199,174,.6); line-height:1.45; margin-top:9px; }
+  .profile-actions{ display:flex; justify-content:flex-end; gap:10px; margin-top:10px; }
+  .mini-link{
+    background:none; border:none; padding:3px 0; text-transform:none; font-size:11px;
+    color:var(--cream-dim); text-decoration:underline; text-underline-offset:3px;
+  }
+  .answer-stack{ flex:1; display:flex; flex-direction:column; gap:8px; }
+  textarea.answer-box{
+    width:100%; min-height:74px; max-height:190px; resize:vertical;
+    background:rgba(255,255,255,0.04); border:1.5px solid var(--line); border-radius:10px;
+    padding:13px 15px; font-family:'Inter',sans-serif; font-size:15px; line-height:1.45;
+    color:var(--cream); outline:none; transition:border-color .2s, background .2s;
+  }
+  textarea.answer-box::placeholder{ color:rgba(244,239,225,0.35); }
+  textarea.answer-box:focus{ border-color:var(--teal); background:rgba(255,255,255,0.06); }
+  textarea.answer-box:disabled{ opacity:.72; }
+  .answer-tools{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .btn-mic{
+    padding:9px 12px; background:transparent; color:var(--teal); border:1px solid var(--teal);
+    font-size:10.5px; text-transform:none;
+  }
+  .btn-mic.listening{ color:var(--gold-bright); border-color:var(--gold); animation:pulseTimer 1s infinite; }
+  .answer-hint{ font-size:10.5px; color:rgba(207,199,174,.6); }
+  .feedback.unknown{ background:rgba(46,154,148,.08); border-color:var(--teal); }
+  .feedback.unknown .fb-head{ color:var(--teal); }
+  .feedback.unknown .fb-key{ background:var(--teal); color:var(--navy-deep); }
+  .analysis-box{
+    border:1px solid var(--line); border-radius:11px; background:rgba(255,255,255,.025);
+    padding:14px; margin:0 0 18px; text-align:left;
+  }
+  .analysis-title{
+    font-family:'IBM Plex Mono', monospace; font-size:11px; letter-spacing:1px;
+    text-transform:uppercase; color:var(--gold-bright); margin-bottom:10px;
+  }
+  .rubric-grid{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin-bottom:22px; }
+  .rubric-card{ border:1px solid var(--line); border-radius:10px; padding:12px; text-align:left; background:rgba(255,255,255,.02); }
+  .rubric-card .label{ color:var(--cream-dim); font-size:11px; margin-bottom:5px; }
+  .rubric-card .value{ font-family:'Fraunces',serif; font-size:25px; font-weight:700; color:var(--gold-bright); }
+  .rubric-card .bar{ height:4px; background:rgba(255,255,255,.08); border-radius:4px; overflow:hidden; margin-top:8px; }
+  .rubric-card .bar > span{ display:block; height:100%; background:linear-gradient(90deg,var(--teal),var(--gold)); }
+  .strength-box{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px; }
+  .strength-item{ border-radius:10px; padding:12px; border:1px solid var(--line); text-align:left; font-size:12.5px; line-height:1.5; }
+  .strength-item b{ display:block; color:var(--gold-bright); margin-bottom:3px; }
+  .intro-notes{ margin:0; padding-left:18px; color:var(--cream-dim); font-size:13px; line-height:1.55; }
+  .strong-example{ margin-top:12px; border-left:2px solid var(--teal); padding:10px 12px; background:rgba(46,154,148,.06); border-radius:0 8px 8px 0; color:var(--cream); font-size:13px; line-height:1.55; }
+  .history-wrap{ margin-top:18px; }
+  .history-chart{ width:100%; min-height:190px; border:1px solid var(--line); border-radius:11px; background:rgba(255,255,255,.02); overflow:hidden; }
+  .history-chart svg{ display:block; width:100%; height:auto; }
+  .history-insight{ font-size:12px; line-height:1.55; color:var(--cream-dim); margin-top:10px; }
+  .history-empty{ color:var(--cream-dim); font-size:12px; padding:18px; text-align:center; }
+  details.history-details{ border-top:1px solid var(--line); margin-top:18px; padding-top:14px; }
+  details.history-details summary{ cursor:pointer; color:var(--gold-bright); font-family:'IBM Plex Mono',monospace; font-size:11.5px; }
+  .result-note{ font-size:10.5px; line-height:1.5; color:rgba(207,199,174,.6); margin:-10px 0 20px; text-align:left; }
+
+  @media (max-width:520px){
+    .card{ padding:28px 20px 24px; }
+    .q-text{ font-size:21px; }
+    .input-row{ flex-direction:column; }
+    .btn-submit{ padding:13px; }
+    .choice-grid, .choice-grid.three, .profile-grid, .rubric-grid, .strength-box{ grid-template-columns:1fr; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .feedback{ animation:none; }
+    .progress-fill{ transition:none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div class="brand">
+    <div class="brand-mark">
+      <div class="key-glyph"><img src="data:image/png;base64,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" alt="F Klavye Akademisi"></div>
+      <div class="brand-text">
+        <div class="name">F Klavye Akademisi</div>
+        <div class="slogan">Hızlı Yaz, Hızlı Başar!</div>
+      </div>
+    </div>
+    <div class="score-pill">
+      <span>Soru <b id="qIndex">1</b>/<span id="qTotal">300</span></span>
+      <span class="divider" id="scoreDivider">·</span>
+      <span id="scoreSegment">Puan <b id="scoreLive">0</b>/100</span>
+    </div>
+  </div>
+
+  <div class="session-controls" id="sessionControls" style="display:none;">
+    <button type="button" class="ctrl-link" id="homeBtn">Anasayfa</button>
+    <span class="ctrl-divider">·</span>
+    <button type="button" class="ctrl-link" id="resetBtn">Sıfırla</button>
+  </div>
+
+  <div class="progress-track" id="progressTrack" style="display:none;"><div class="progress-fill" id="progressFill" style="width:1%"></div></div>
+
+  <div class="card start-card show" id="startCard">
+    <div class="q-eyebrow">Sözlü Mülakat Hazırlık</div>
+    <p class="q-text" id="startTitle">F Klavye Akademisi Mülakat Simülasyonu</p>
+    <p class="start-sub" id="startSub">İstersen 6 kaynaklı kişiye özel mülakat yapabilir, istersen kişiselleştirmeyi kapatıp yalnızca bilgi soru bankasından mülakata girebilirsin. Sonuçta ayrıntılı mülakat karnesi ve geçmiş gelişim grafiğin oluşturulur.</p>
+
+    <div class="option-section">
+      <div class="option-title">Mülakat İçeriği</div>
+      <div class="choice-grid">
+        <label class="choice-card">
+          <input type="radio" name="questionMode" value="personalized" checked>
+          <div class="choice-body"><div class="choice-name">Kişiye Özel + Bilgi Soruları</div><div class="choice-desc">6 kaynaklı motor; profil, kendini tanıtma, son cevap, komisyon hafızası, yetkinlik ve bilgi bankasını birlikte kullanır.</div></div>
+        </label>
+        <label class="choice-card">
+          <input type="radio" name="questionMode" value="knowledge_only">
+          <div class="choice-body"><div class="choice-name">Sadece Bilgi Soruları</div><div class="choice-desc">Kişiye özel soru sormaz. Kendini tanıtma, takip, hafıza ve senaryo soruları kapanır; yalnızca bilgi soru bankasından mülakat yapılır.</div></div>
+        </label>
+      </div>
+    </div>
+
+    <div class="option-section">
+      <div class="option-title">Aday Profili · Kişiye Özel Mülakat</div>
+      <div class="profile-panel" id="profilePanel">
+        <div class="profile-grid">
+          <div class="profile-field"><label for="profileName">Ad Soyad (opsiyonel)</label><input id="profileName" type="text" placeholder="Örn. Ayşe Yılmaz"></div>
+          <div class="profile-field"><label for="profileAge">Yaş (opsiyonel)</label><input id="profileAge" type="text" inputmode="numeric" placeholder="Örn. 24"></div>
+          <div class="profile-field"><label for="profileEducation">Mezuniyet / Bölüm</label><input id="profileEducation" type="text" placeholder="Örn. İşletme lisans"></div>
+          <div class="profile-field"><label for="profileEducation2">İkinci mezuniyet (varsa)</label><input id="profileEducation2" type="text" placeholder="Örn. Büro Yönetimi önlisans"></div>
+          <div class="profile-field"><label for="profileCity">Yaşadığı şehir</label><input id="profileCity" type="text" placeholder="Örn. Ankara"></div>
+          <div class="profile-field"><label for="profileCourthouse">Tercih ettiği adliye / şehir</label><input id="profileCourthouse" type="text" placeholder="Örn. Şırnak Adliyesi"></div>
+          <div class="profile-field"><label for="profilePublicService">Daha önce kamu görevi</label><select id="profilePublicService"><option value="">Belirtmek istemiyorum</option><option value="no">Hayır</option><option value="yes">Evet</option></select></div>
+          <div class="profile-field"><label for="profileSpouseJob">Eş / nişanlı mesleği (opsiyonel)</label><input id="profileSpouseJob" type="text" placeholder="Örn. Polis memuru"></div>
+          <div class="profile-field full"><label for="profileExperience">İş deneyimi</label><textarea id="profileExperience" placeholder="Kısaca önceki iş/meslek deneyimini yaz. Yoksa 'Yok' yazabilirsin."></textarea></div>
+          <div class="profile-field full"><label for="profileReason">Zabıt kâtipliğini neden istiyor?</label><textarea id="profileReason" placeholder="Adayın kendi gerekçesini kısa şekilde yazması kişisel soruları güçlendirir."></textarea></div>
+        </div>
+        <div class="privacy-note">Profil bilgileri yalnızca bu tarayıcıda saklanır ve kişiye özel soru üretmek için kullanılır.</div>
+        <div class="profile-actions"><button type="button" class="mini-link" id="clearProfileBtn">profili temizle</button></div>
+      </div>
+    </div>
+
+    <div class="option-section">
+      <div class="option-title">Çalışma Şekli</div>
+      <div class="choice-grid">
+        <label class="choice-card">
+          <input type="radio" name="interviewMode" value="study" checked>
+          <div class="choice-body"><div class="choice-name">Çalışma Modu</div><div class="choice-desc">Anlık değerlendirme, kendini tanıtma analizi ve beklenen cevap gösterilir.</div></div>
+        </label>
+        <label class="choice-card">
+          <input type="radio" name="interviewMode" value="real">
+          <div class="choice-body"><div class="choice-name">Gerçek Mülakat</div><div class="choice-desc">10 dinamik soru; 6 kaynaklı motor, anlık doğru/yanlış gizli, ayrıntılı karne mülakat sonunda.</div></div>
+        </label>
+      </div>
+    </div>
+
+    <div class="option-section">
+      <div class="option-title">Komisyon Seviyesi</div>
+      <div class="choice-grid three">
+        <label class="choice-card"><input type="radio" name="commissionLevel" value="normal" checked><div class="choice-body"><div class="choice-name">Normal</div><div class="choice-desc">Daha sakin, az takip sorusu.</div></div></label>
+        <label class="choice-card"><input type="radio" name="commissionLevel" value="challenging"><div class="choice-body"><div class="choice-name">Zorlayıcı</div><div class="choice-desc">Cevaplardan daha sık yeni soru üretir.</div></div></label>
+        <label class="choice-card"><input type="radio" name="commissionLevel" value="realistic"><div class="choice-body"><div class="choice-name">Gerçekçi</div><div class="choice-desc">Nötr tepkiler ve değişken takip soruları.</div></div></label>
+      </div>
+    </div>
+
+    <div class="mode-note" id="modeNote"></div>
+
+    <label class="toggle-row" for="shuffleToggle">
+      <input type="checkbox" id="shuffleToggle" checked><span class="toggle-box"></span><span class="toggle-label">Bilgi sorularını karıştır</span>
+    </label>
+
+    <button type="button" class="btn-submit btn-start" id="startBtn">Simülasyona Başla →</button>
+
+    <details class="history-details" id="startHistoryDetails">
+      <summary>Geçmiş mülakatlarım ve gelişim grafiği</summary>
+      <div class="history-wrap">
+        <div class="history-chart" id="historyChartStart"></div>
+        <div class="history-insight" id="historyInsightStart"></div>
+        <div class="profile-actions"><button type="button" class="mini-link" id="clearHistoryBtn">geçmişi temizle</button></div>
+      </div>
+    </details>
+  </div>
+
+  <div class="card" id="quizCard" style="display:none;">
+    <div class="q-eyebrow">
+      <span><span class="no" id="qNo">Soru 01</span> · <span id="sessionLabel">Kalem Mevzuatı ve Genel Kültür</span></span>
+      <span class="timer-badge" id="timerBadge">45s</span>
+    </div>
+    <p class="q-text" id="qText">Yükleniyor…</p>
+
+    <div class="input-row">
+      <div class="answer-stack">
+        <textarea class="answer-box" id="answerInput" placeholder="Cevabını buraya yaz veya mikrofonla söyle…" autocomplete="off"></textarea>
+        <div class="answer-tools">
+          <button type="button" class="btn-mic" id="micBtn">🎙 Sesle Cevapla</button>
+          <span class="answer-hint" id="answerHint">Ctrl + Enter ile gönderebilirsin.</span>
+        </div>
+      </div>
+      <button type="button" class="btn-submit" id="submitBtn">Gönder</button>
+    </div>
+
+    <div class="feedback" id="feedbackBox">
+      <div class="fb-head"><span class="fb-key" id="fbKey">✓</span><span id="fbTitle">Tebrikler, doğru cevap!</span></div>
+      <div class="fb-answer" id="fbAnswer"></div>
+    </div>
+
+    <div class="foot-row">
+      <button type="button" class="skip-link" id="skipBtn">bu soruyu geç</button>
+      <button type="button" class="btn-next" id="nextBtn">Sonraki soru →</button>
+    </div>
+  </div>
+
+  <div class="card" id="checkpointCard" style="display:none;">
+    <div class="q-eyebrow">Ara Değerlendirme</div>
+    <p class="q-text" id="checkpointScore">0 / 100</p>
+    <p class="start-sub" id="checkpointSub">Şu ana kadarki performansının özeti.</p>
+    <div class="r-bars">
+      <div class="r-bar correct">Doğru: <b id="ckCorrect">0</b></div>
+      <div class="r-bar close">Yakın: <b id="ckClose">0</b></div>
+      <div class="r-bar wrong">Yanlış: <b id="ckWrong">0</b></div>
+    </div>
+    <div class="review-section">
+      <div class="review-section-title">Tekrar Çalışman Gereken Sorular</div>
+      <ul class="review-list" id="checkpointReviewList"></ul>
+    </div>
+    <button type="button" class="btn-submit btn-start" id="checkpointContinueBtn">Devam Et →</button>
+  </div>
+
+  <div class="card result" id="resultCard">
+    <div class="r-eyebrow">Mülakat Tamamlandı</div>
+    <div class="r-score" id="finalScore">0 / 100</div>
+    <div class="r-sub" id="finalSub">İşte performansının özeti.</div>
+    <div class="result-meta" id="resultMeta"></div>
+
+    <div class="analysis-title">Ayrıntılı Mülakat Karnesi</div>
+    <div class="rubric-grid" id="rubricGrid"></div>
+    <div class="result-note" id="rubricNote">Konuşma akıcılığı; mikrofon kullanıldıysa cevap süresi, tempo ve dolgu kelimeleri üzerinden; yazılı cevapta ise metinsel akıcılık göstergeleri üzerinden yaklaşık değerlendirilir. Ses titremesi veya heyecan gibi psikolojik çıkarımlar yapılmaz.</div>
+    <div class="strength-box" id="strengthBox"></div>
+
+    <div class="analysis-box" id="introResultBox" style="display:none;">
+      <div class="analysis-title">Kendini Tanıtma Analizi</div>
+      <ul class="intro-notes" id="introNotes"></ul>
+      <div class="strong-example" id="strongIntroExample"></div>
+    </div>
+
+    <div class="analysis-box" id="unknownResultBox" style="display:none;">
+      <div class="analysis-title">Kriz Yönetimi · “Bilmiyorum”</div>
+      <div class="start-sub" id="unknownSummary" style="margin:0;"></div>
+    </div>
+
+    <div class="r-bars">
+      <div class="r-bar correct">Doğru: <b id="cCorrect">0</b></div>
+      <div class="r-bar close">Yakın: <b id="cClose">0</b></div>
+      <div class="r-bar wrong">Yanlış: <b id="cWrong">0</b></div>
+    </div>
+    <div class="cat-breakdown" id="catBreakdown"></div>
+    <div class="review-section">
+      <div class="review-section-title">Tekrar Çalışman Gereken Sorular</div>
+      <ul class="review-list" id="finalReviewList"></ul>
+    </div>
+
+    <div class="analysis-box">
+      <div class="analysis-title">Geçmiş Mülakatlar ve Gelişim</div>
+      <div class="history-chart" id="historyChartResult"></div>
+      <div class="history-insight" id="historyInsightResult"></div>
+    </div>
+
+    <button class="btn-restart" id="restartBtn">Baştan Başla</button>
+  </div>
+
+  <div class="foot-note">F KLAVYE AKADEMİSİ · ZABIT KÂTİPLİĞİ SÖZLÜ MÜLAKAT SİMÜLASYONU</div>
+
+</div>
+
+<script>
+/* ---------------- Data ---------------- */
+const QUESTIONS = [
+{q:"Müzekkere nedir?", a:"Bir iş için üst makama yazılan yazı veya bir makamdan diğer makama yazılan yazıdır, istem yazısıdır."},
+{q:"Tekit nedir?", a:"Yinelemek, tekrarlamak, üsteleme."},
+{q:"Ara karar nedir?", a:"Son hüküm olmayıp, hükme giden yolda verilen yardımcı kararlardır."},
+{q:"Tebliğ nedir?", a:"Bir kararın veya resmi evrakın muhatabına resmi olarak ulaştırılması, iletilmesi, duyurulmasıdır."},
+{q:"Zabıt kâtibinin ataması kim tarafından yapılır?", a:"Adalet Komisyonu tarafından yapılır."},
+{q:"Zabıt kâtibi kimlerin emri altındadır?", a:"Hâkim ve savcıların emri altındadır."},
+{q:"Esas Defteri nedir?", a:"Davanın ceza mahkemesine açılmasından hükmün kesinleşmesine kadar geçen işlemlerin kaydedildiği defterdir."},
+{q:"Karar Defteri nedir?", a:"Mahkemece verilmiş olan kararların yazılmış olduğu defterdir."},
+{q:"Temyiz Defteri nedir?", a:"Hükümden sonra, hüküm aleyhine temyiz mahkemesine gidildiğinde sonucun kaydedildiği defterdir."},
+{q:"Duruşma Günleri Defteri nedir?", a:"Duruşmanın yapılacağı tarihin planlandığı defterdir."},
+{q:"Talimat Defteri nedir?", a:"Başka yer icra ve iflas dairelerinin talimat evrakının kaydedildiği defterdir."},
+{q:"Zimmet Defteri nedir?", a:"Merkez müdürlüğünden çıkan her türlü resmi yazının zimmetlendiği defterdir."},
+{q:"İlamat Defteri nedir?", a:"İnfaz için Cumhuriyet savcılığına gönderilen ilamların kaydedildiği ve savcının imzasının alındığı defterdir."},
+{q:"Değişik İşler Defteri nedir?", a:"Arama, tedavi altına alma, müdafi tayini gibi karar ve işlemlerin kaydedildiği defterdir."},
+{q:"Mübaşirin görevi nedir?", a:"Duruşmanın disiplinini sağlamak, hâkime yardımcı olmak, tarafları salona çağırmak, yerlerini göstermek."},
+{q:"Mübaşir resmi kıyafet giymek zorunda mıdır?", a:"Evet, resmi kıyafet giymek zorundadır."},
+{q:"Yazı İşleri Müdürünün ataması kim tarafından yapılır?", a:"Adalet Bakanlığı tarafından yapılır."},
+{q:"Yazı İşleri Müdürünün görevlerinden biri nedir?", a:"Zabıt kâtibi, mübaşir, hizmetli ve diğer görevliler arasında iş bölümü yapmaktır."},
+{q:"UYAP nedir?", a:"Ulusal Yargı Ağı Projesi; adli işlemlerin elektronik ortamda yapılıp muhafaza altında tutulmasını sağlayan projedir."},
+{q:"İdari İşler Müdürünün görevi nedir?", a:"Bölge Adliye Mahkemelerinde alım-satım, maaş ödemeleri, temizlik, güvenlik gibi idari işleri yürütmektir."},
+{q:"Kalemde kimler bulunur?", a:"Yazı işleri müdürü, zabıt kâtibi, hizmetli, mübaşir ve memur bulunur."},
+{q:"Cumhuriyet Savcısının görevi nedir?", a:"Adli göreve ilişkin işlem yapmak, delil toplamak, gerektiğinde Cumhuriyet Başsavcısına vekâlet etmektir."},
+{q:"Cumhuriyet Başsavcısının görevi nedir?", a:"Başsavcılığın verimli ve düzenli çalışmasını sağlamak, kamu davası açılmasına yer olup olmadığına dair soruşturma yapmaktır."},
+{q:"Neden Cumhuriyet Savcısı denilmektedir?", a:"Cumhuriyeti korumak için gerektiğinde en üst makamlardan bile hesap sorabilecek kişi olduğu için."},
+{q:"Hâkimin görevi nedir?", a:"Dava dosyalarını incelemek, tarafsız karar vermek, Türk Milleti adına hüküm vermektir."},
+{q:"İddianameyi kim hazırlar?", a:"Cumhuriyet Savcısı hazırlar."},
+{q:"Emniyet Müdürü mü Cumhuriyet Başsavcısı mı daha üstündür?", a:"Cumhuriyet Savcıları kolluğun adli amiridir ama idari amiri değildir; idari amir validir."},
+{q:"Savcılıktaki kâtibin görevi nedir?", a:"Şikâyette veya istekte bulunmak amacıyla gelen yurttaşlarla muhatap olma görevini yerine getirmektir."},
+{q:"Adalet Mülkün Temelidir sözü ne anlama gelir?", a:"Devlette adalet olmazsa insanlar mutsuz olur; bireylerin hakları korunmazsa kargaşa çıkar, bu yüzden adalet devletin temelidir."},
+{q:"Yüksek Seçim Kurulu kaç asıl kaç yedek üyeden oluşur?", a:"7 asıl, 4 yedek üyeden oluşur."},
+{q:"YSK üyeleri kaç yıllığına seçilir?", a:"6 yıllığına seçilirler."},
+{q:"YSK üyelerinin kaçı Yargıtay'dan kaçı Danıştay'dan alınır?", a:"6'sı Yargıtay'dan, 5'i Danıştay'dan alınır."},
+{q:"Atatürkçülük nedir?", a:"Türk milletinin iradesiyle oluşmuş, bağımsızlığa kavuşma, çağdaş uygarlık seviyesine ulaşma, hürriyet ve demokrasi anlayışıdır."},
+{q:"Cumhuriyetçilik nedir?", a:"Egemenliğin halkta olduğu devlet yönetim şeklidir, bir demokrasi biçimidir."},
+{q:"Milliyetçilik nedir?", a:"Din ve ırk ayrımı gözetmeksizin dil, kültür ve siyasi birlikteliğe dayanan millet anlayışıdır."},
+{q:"Halkçılık nedir?", a:"Türkiye Cumhuriyeti halkının sınıf ayrımı olmaksızın eşit haklara ve özgürlüklere sahip olması, sosyal adalet anlayışıdır."},
+{q:"Devletçilik nedir?", a:"Memleket ekonomisini devletin eline alması, ekonomik alanda devletin fiilen ilgilenmesi ilkesidir; 1930'da gelmiştir."},
+{q:"Laiklik nedir?", a:"Din merkezli kural koymamak, din ve devlet işlerini birbirinden ayırmak, inanç özgürlüğü ilkesidir."},
+{q:"Laiklik hangi yıl anayasaya eklenmiştir?", a:"1937 yılında 1924 Anayasasına eklenmiştir."},
+{q:"İnkılapçılık nedir?", a:"Eskilerin yerine daha çağdaş reformlar getirme, yenilikçi anlayıştır."},
+{q:"Yurtta Sulh Cihanda Sulh ne anlama gelir?", a:"Sulh barıştır; milletleri refah ve saadete eriştiren en iyi yol olduğunu anlatan ilkedir."},
+{q:"Çağdaşlaşma nedir?", a:"Batıyı taklit etmeden, orada gördüğümüz iyi şeyleri kendi bünyemize uygun bularak almak anlayışıdır."},
+{q:"Bilimsellik nedir?", a:"Hayat ve başarı için en gerçek yol göstericinin bilim ve fen olduğu anlayışıdır."},
+{q:"Akılcılık nedir?", a:"Mantık ve zekâyla hareket etmenin en belirgin özellik olduğu anlayıştır."},
+{q:"Atatürk'ün atlarının isimleri nelerdir?", a:"Sakarya ve Çankaya."},
+{q:"Atatürk'ün köpeğinin adı nedir?", a:"Foks."},
+{q:"Atatürk'e soyadı ne zaman ve kim tarafından verildi?", a:"24 Kasım 1934'te TBMM tarafından verildi."},
+{q:"Atatürk'ün nüfusa kayıtlı olduğu il neresidir?", a:"Gaziantep."},
+{q:"Adli yargıda temyiz mahkemesi hangisidir?", a:"Yargıtay."},
+{q:"Adli yargıda 2. derece mahkemesi hangisidir?", a:"Bölge Adliye Mahkemesi."},
+{q:"Sulh Hukuk Mahkemesi hangi mahkeme grubuna girer?", a:"Genel Hukuk Mahkemeleri grubuna girer."},
+{q:"Asliye Ceza ve Ağır Ceza Mahkemeleri hangi grupta yer alır?", a:"Genel Ceza Mahkemeleri grubunda yer alır."},
+{q:"İdari yargıda temyiz mahkemesi hangisidir?", a:"Danıştay."},
+{q:"İdari yargıda ilk derece mahkemeleri nelerdir?", a:"İdare Mahkemesi ve Vergi Mahkemesidir."},
+{q:"İstinaf nedir?", a:"Bölge Adliye/İdari Mahkemelerinin, ilk derece mahkemelerinin kararlarını denetlemesidir."},
+{q:"Uyuşmazlık Mahkemesinin görevi nedir?", a:"Adli ve idari yargı organları arasındaki hüküm uyuşmazlıklarını kesin olarak çözmektir."},
+{q:"Sayıştay'ın görevi nedir?", a:"TBMM'nin mali denetim organıdır, bir mahkemedir, kamu idarelerini denetler."},
+{q:"Ağır ceza mahkemesinin görevleri nelerdir?", a:"Anayasal düzene karşı suçlar, devletin egemenliğine ve organlarına karşı suçlar, devlet sırlarına karşı suçlara bakar."},
+{q:"Aile Mahkemesi hangi davalara bakar?", a:"Kişilere yönelik şiddet, boşanma, evliliğin butlanı ya da iptali davalarına bakar."},
+{q:"İş Mahkemesinin görevi nedir?", a:"İşçinin kıdem tazminatı, ihbar tazminatı, kötü niyet tazminatı gibi tazminat alacaklarına ilişkin davalara bakar."},
+{q:"Toplu mahkeme nedir?", a:"Heyet halinde çalışan mahkemedir."},
+{q:"Mahkemeler nasıl kurulur?", a:"Her ile kurulur; iş yoğunluğuna göre ilçelerde HSK'nın olumlu görüşü alınarak Adalet Bakanlığınca kurulur."},
+{q:"Komisyon üyelerini kim atar?", a:"Adalet Bakanlığı atar."},
+{q:"Adalet Komisyonu başkanının görevi nedir?", a:"Asli devlet memurluğuna atamaları, sicil ve disiplin işlemlerini 657 Sayılı Devlet Memurları Kanunu'na göre yürütmektir."},
+{q:"Soruşturma nedir?", a:"Bir suçla ilgili yargılamadan önce yapılan araştırmadır."},
+{q:"İddianame nedir?", a:"Cumhuriyet Savcısının, şüpheli hakkında ceza davası açmak üzere düzenlediği belgedir."},
+{q:"Kovuşturma nedir?", a:"İddianamenin kabulünden hükmün kesinleşmesine kadar devam eden süreçtir."},
+{q:"Soruşturma aşamasında kişinin sıfatı nedir?", a:"Şüphelidir."},
+{q:"Kovuşturma aşamasında kişinin sıfatı nedir?", a:"Sanıktır."},
+{q:"Hüküm verildiğinde kişinin sıfatı nedir?", a:"Hükümlüdür."},
+{q:"Adli para cezası nedir?", a:"Hâkimin, hapis cezası ve güvenlik tedbiri yerine uygun gördüğünde verdiği ceza yaptırımıdır."},
+{q:"Adli para cezası en az kaç günden başlar?", a:"En az 5 günden başlar, aksine hüküm yoksa 730 güne kadar sürebilir."},
+{q:"Adli para cezasında taksitlendirme en az kaç taksit olabilir?", a:"4 taksitten az olamaz, 2 yıldan fazla olamaz."},
+{q:"İdari para cezası nedir?", a:"Mahkeme olmadan, devletin idari kurumları tarafından gerçek veya tüzel kişilere verilen cezadır."},
+{q:"HAGB nedir?", a:"Hükmün Açıklanmasının Geri Bırakılmasıdır."},
+{q:"Denetimli serbestlik nedir?", a:"Cezaevine girmeksizin, dışarıda bazı kurallara uyma zorunluluğudur."},
+{q:"Disiplin hapsi nedir?", a:"Yargılama sürecinde düzen bozuculara karşı uygulanan, temyizi ve itirazı olmayan, 4 günü geçmeyen bir hapis türüdür."},
+{q:"Adli sicil kaydı nedir?", a:"Kesinleşmiş mahkûmiyet kararlarını gösteren kayıttır."},
+{q:"Bilirkişi (Ehl-i vukuf) nedir?", a:"Alanında görüşüne başvurulacak kadar uzman kişidir."},
+{q:"Beraat nedir?", a:"Suçlu bulunmama halidir."},
+{q:"Fezleke nedir?", a:"Ağır ceza mahkemesi bulunmayan yerlerde toplanan delillerin özetlenip merkez Cumhuriyet Başsavcılığına gönderildiği iddianame öncesi sonuç yazısıdır."},
+{q:"Gaip nedir?", a:"Bulunduğu yer bilinmeyen veya yurt dışında olup getirilmesi uygun olmayan kişidir."},
+{q:"İstinabe nedir?", a:"Mahkeme mahallinde bulunmayan ve dinlenmesi gereken kişinin, oturduğu yer mahkemesince dinlenmesidir."},
+{q:"Müdafi kimdir?", a:"Vekâlet ilişkisi olmaksızın, yasa gereği şüpheli veya sanığı savunan avukata verilen isimdir."},
+{q:"Sanık kime denir?", a:"Hakkında kamu davası açılan şüpheliye denir."},
+{q:"Şüpheli kime denir?", a:"Soruşturmaya konu olan kişiye denir."},
+{q:"Tanık kimdir?", a:"Soruşturma veya dava konusuyla ilgili bilgisi olan, dinlenmesine karar verilen kişidir."},
+{q:"Temyiz nedir?", a:"Üst mahkeme incelemesidir."},
+{q:"Zamanaşımı nedir?", a:"Belirli koşullar altında geçmekle bir hakkın kazanılmasını, kaybedilmesini veya yükümlülükten kurtulmayı sağlayan süredir."},
+{q:"Haciz nedir?", a:"Alacağın ödenmesi için borçlunun malına, parasına veya aylığına el konulmasıdır."},
+{q:"İhzar nedir?", a:"Zor kullanılarak getirme, hazır bulundurmadır."},
+{q:"Kambiyo senedi nedir?", a:"Yasaca ayrıcalıklı korunan senet türüdür."},
+{q:"Konkordato nedir?", a:"Borçlunun, en az üçte iki alacaklısının kabulü ve ticaret mahkemesinin onamasıyla, kabul edilen vadede borcunu ödeyerek borcundan kurtulmasıdır."},
+{q:"İdare Hukuku hangi ülkeden alınmıştır?", a:"Fransa'dan alınmıştır."},
+{q:"Ceza Hukuku hangi ülkeden alınmıştır?", a:"İtalya'dan alınmıştır."},
+{q:"Türk Medeni Kanunu hangi ülkeden alınmıştır?", a:"İsviçre'den alınmıştır; 2002 yılında Türk Medeni Kanunu geldi, İsviçre'ninki kalktı."},
+{q:"Ticaret Kanunu hangi ülkeden alınmıştır?", a:"Almanya'dan alınmıştır."},
+{q:"İlk Adalet Bakanı kimdir?", a:"Seyit Bey'dir."},
+{q:"Kars'ın kurtuluş tarihi nedir?", a:"1920'dir."},
+{q:"Katar'ın başkenti neresidir?", a:"Doha'dır."},
+{q:"Kalem Teşkilatları nelerdir?", a:"Ceza Mahkemesi Kalemi, Hukuk Mahkemeleri Kalemi ve Savcılık Kalemidir."},
+{q:"Everest'e tırmanan ilk Türk kimdir?", a:"Ali Nasuh Mahruki'dir."},
+{q:"Meşru müdafaa nedir?", a:"Bir saldırıyla karşı karşıya kalan kişinin kendini savunmak ve korumak için başvurduğu yoldur."},
+{q:"Amasya Genelgesi ne zaman yayınlandı?", a:"21/22 Haziran 1919'da yayınlandı."},
+{q:"Sivas Kongresi ne zaman yapıldı?", a:"4 Eylül 1919'da yapıldı."},
+{q:"Erzurum Kongresi ne zaman yapılmıştır?", a:"23 Temmuz 1919'da yapılmıştır."},
+{q:"Kanun-i Esasi kimin döneminde ne zaman ilan edildi?", a:"II. Abdülhamit döneminde, 23 Aralık 1876'da ilan edildi."},
+{q:"Son halife kimdir?", a:"Abdülmecid Efendi'dir."},
+{q:"Kurtuluş Savaşını fiilen bitiren antlaşma hangisidir?", a:"Mudanya Ateşkes Antlaşması'dır (11 Ekim 1922)."},
+{q:"Kapitülasyon nedir?", a:"Bir ülkede, yurttaşların zararına olarak yabancılara verilen ayrıcalıklı haklardır."},
+{q:"Kanun-i Esasi'yi hazırlayan kurul hangisidir?", a:"Meclis-i Mahsusa'dır."},
+{q:"Balkan Antantı ne zaman imzalandı?", a:"9 Şubat 1934'te imzalandı."},
+{q:"Osmanlının imzaladığı ilk antlaşma hangisidir?", a:"1444 yılında Osmanlı-Macaristan arasında imzalanan Edirne-Segedin Antlaşması'dır."},
+{q:"Hatay'ın ilk cumhurbaşkanı kimdir?", a:"Tayfur Sökmen'dir."},
+{q:"Artemis Tapınağı hangi medeniyete aittir?", a:"İyonlara aittir."},
+{q:"Suriye sınırı hangi antlaşma ile çizildi?", a:"21 Ekim 1921 tarihli Ankara Antlaşması ile çizildi."},
+{q:"Atatürk kurmay yüzbaşı olarak nereye atandı?", a:"Şam'daki 5. Orduya atandı."},
+{q:"Mondros Ateşkes Antlaşması ne zaman imzalandı?", a:"30 Ekim 1918'de imzalandı."},
+{q:"Sevr Antlaşması ne zaman ve nerede imzalandı?", a:"10 Ağustos 1920'de Fransa'nın Sevr kasabasında imzalandı."},
+{q:"İlk Türk topluluğu hangisidir?", a:"İskitler (Sakalar)'dır."},
+{q:"Latin harflerini ilk kim kullandı?", a:"Romalılar kullandı."},
+{q:"Talas Savaşı hangi yıl yapıldı?", a:"751 yılında yapıldı."},
+{q:"Anadolu'ya sefer düzenleyen ilk Türk devleti hangisidir?", a:"Hunlardır."},
+{q:"Atatürk'ün fikir hayatını etkileyen şehirler hangileridir?", a:"Selanik, Manastır, İstanbul ve Sofya'dır."},
+{q:"Atatürk'ün katıldığı ilk savaş hangisidir?", a:"Trablusgarp Savaşı'dır."},
+{q:"Teşvik-i Sanayi Kanunu ne zaman çıkarılmıştır?", a:"28 Mayıs 1927'de çıkarılmıştır."},
+{q:"Sadabat Paktı üyeleri kimlerdir?", a:"Türkiye, İran, Irak ve Afganistan'dır (8 Temmuz 1937)."},
+{q:"Montrö Boğazlar Sözleşmesi ne zaman imzalandı?", a:"20 Temmuz 1936'da imzalandı."},
+{q:"Koalisyon hükümeti nedir?", a:"Partilerden herhangi birinin tek başına hükümet kuracak çoğunluğu sağlayamaması durumunda birkaç partinin ortaklaşa kurduğu hükümettir."},
+{q:"Gümrü Antlaşmasının en önemli sonucu nedir?", a:"Sevr Antlaşmasının geçersizliği ilk kez uluslararası bir antlaşmayla onaylanmıştır."},
+{q:"Yunanlıların İzmir'i işgal etmelerine dayanak gösterdikleri antlaşma hangisidir?", a:"Sevr Antlaşması'dır."},
+{q:"31 Mart Vakası'nı bastıran Hareket Ordusu komutanı kimdir?", a:"Mahmut Şevket Paşa'dır."},
+{q:"İzmir İktisat Kongresi ne zaman yapıldı?", a:"17 Şubat - 4 Mart 1923 tarihleri arasında yapıldı."},
+{q:"Kabotaj Kanunu ne zaman kabul edildi?", a:"1 Temmuz 1926'da kabul edildi."},
+{q:"Van Gölü hangi bölgemizdedir?", a:"Doğu Anadolu Bölgesi'ndedir."},
+{q:"Tuz Gölü hangi bölgemizdedir?", a:"İç Anadolu Bölgesi'ndedir."},
+{q:"Beyşehir Gölü hangi bölgemizdedir?", a:"İç Anadolu Bölgesi'ndedir."},
+{q:"Dünyanın en derin gölü hangisidir?", a:"Baykal Gölü'dür."},
+{q:"Beyinsiz ve kalpsiz hayvan hangisidir?", a:"Deniz anaları."},
+{q:"Kızılırmak nereye dökülür?", a:"Karadeniz'e dökülür."},
+{q:"Uzaya çıkan ilk kadın kimdir?", a:"Valentina Tereşkova'dır."},
+{q:"Mevlana aslen nerelidir?", a:"İran'ın Horasan bölgesindendir."},
+{q:"Güneşe en yakın gezegen hangisidir?", a:"Merkür'dür."},
+{q:"Türkiye Cumhuriyeti'nde devlet sanatçısı unvanını alan ilk kişi kimdir?", a:"Adnan Saygun'dur."},
+{q:"30 Ekim 1930'da Yunanistan ile imzalanan antlaşma hangisidir?", a:"Dostluk Antlaşması'dır."},
+{q:"Halifelik Osmanlıya ne zaman ve hangi padişah döneminde geçti?", a:"13 Nisan 1517'de Yavuz Sultan Selim döneminde geçti."},
+{q:"Bozkurt-Lotus olayı nedir?", a:"2 Ağustos 1926'da Türk vapuru Bozkurt ile Fransız vapuru Lotus'un Ege'de çarpışıp Bozkurt'un batması, 8 Türk vatandaşının ölmesi ve İstanbul'da Fransız kaptanın tutuklanmasıyla başlayan uluslararası bir davadır."},
+{q:"Bozkurt-Lotus olayı nerede çözüldü?", a:"Lahey'deki Uluslararası Adalet Divanı'nda çözüldü; dava Türk tezinin kazanmasıyla sonuçlandı."},
+{q:"Nusret Mayın Gemisi'nin kaptanı kimdir?", a:"İsmail Hakkı Bey ve Nazmi Akpınar'dır."},
+{q:"Olağanüstü kanun yolları nelerdir?", a:"Kanun yararına bozma, yargılamanın yenilenmesi, Yargıtay ve Bölge Adliye Mahkemesi Cumhuriyet Başsavcısının itiraz yetkisidir."},
+{q:"Olağan kanun yolları nelerdir?", a:"İstinaf, temyiz ve itiraz kanun yollarıdır."},
+{q:"Tazyik hapsi nedir?", a:"Bir kimseyi bir işi yapmaya veya borcunu ödemeye zorlamak için verilen yaptırımdır."},
+{q:"Ticari şirket türleri nelerdir?", a:"Anonim şirket, limited şirket, komandit şirket, kollektif şirket ve kooperatif şirkettir."},
+{q:"Otopside kimler bulunur?", a:"Cumhuriyet savcısı huzurunda bir adli tıp uzmanı, bir patoloji uzmanı ve biri pratisyen olmak üzere iki hekim bulunur."},
+{q:"Adalet Mülkün Temelidir sözünü kim söylemiştir?", a:"Hz. Ömer söylemiştir."},
+{q:"E-imza nedir?", a:"Islak imza ile aynı amaca hizmet eden, elektronik ortamda oluşturulan imza çeşididir."},
+{q:"Milli Güvenlik Kurulunda Cumhurbaşkanı yoksa yerine kim başkanlık yapar?", a:"Cumhurbaşkanı Yardımcısı başkanlık yapar."},
+{q:"Kamu hizmeti nedir?", a:"Devlet, yönetici veya idare tarafından toplumun ihtiyaçlarını karşılamak için yürütülen faaliyetlerdir."},
+{q:"Dava düşme halleri nelerdir?", a:"Sanığın ölümü, genel af, dava zamanaşımı, adli para cezalarında ön ödeme, uzlaşma ve şikâyetten vazgeçmedir."},
+{q:"Fiil ehliyeti nedir?", a:"Kişinin kendi fiilleriyle hak edinebilme ve borç altına girebilme ehliyetidir; şartları ergin olma, ayırt etme gücüne sahip olma ve kısıtlı olmamadır."},
+{q:"Hak ehliyeti nedir?", a:"Bir kişinin haklara ve borçlara sahip olma ehliyetidir; tam ve sağ doğumla başlar."},
+{q:"İbra nedir?", a:"Bir kimseyi belli bir borcu, edimi veya yükümlülüğü yerine getirmekten kurtarmaktır."},
+{q:"Temellük nedir?", a:"Bir taşınmazı üzerine geçirmek, alacaklı olarak borçludan devralmaktır."},
+{q:"Velayet nedir?", a:"Çocuğun korunması ve temsili için öngörülmüş hukuksal haklardır; reşit olmayan çocukların velayeti anne babaya aittir."},
+{q:"İlk kadın Yargıtay üyesi kimdir?", a:"Melahat Ruacan'dır."},
+{q:"İlk kadın hâkim kimdir?", a:"Suat Berk'tir."},
+{q:"İlk kadın kaymakam kimdir?", a:"Özlem Bozkurt'tur."},
+{q:"İlk kadın vali kimdir?", a:"Lale Aytaman'dır."},
+{q:"İdarenin düzenleyici işlemleri nelerdir?", a:"Cumhurbaşkanı kararnamesi ve yönetmeliktir."},
+{q:"Memurun yükümlülükleri nelerdir?", a:"Kıyafet, ikamet, devlet malını koruma, resmi belge ve araçları iade etmedir."},
+{q:"Memurun ödevleri nelerdir?", a:"Sadakat, bağlılık, tarafsızlık, uyumlu olma, emir alma ve iş başı yapmadır."},
+{q:"Memurun yasaklılık halleri nelerdir?", a:"Ticaret yapma, ikinci görev alma, hediye kabul etme ve siyasi parti üyeliğidir."},
+{q:"Dünyanın en büyük gölü hangisidir?", a:"Hazar Denizi'dir."},
+{q:"Rusya'daki en derin göl hangisidir?", a:"Baykal Gölü'dür."},
+{q:"Dünyanın en kalabalık metrosu hangisidir?", a:"Rusya'daki Moskova Metrosu'dur."},
+{q:"Üç ülkeye sınırı olan tek ilimiz hangisidir?", a:"Iğdır'dır."},
+{q:"Razgrad olayı nedir?", a:"1933'te Bulgaristan'ın Razgrad şehrinde bir grup saldırganın Türk mezarlığını tahrip etmesi üzerine İstanbul Üniversitesi öğrencilerinin bunu protesto ederek Bulgar mezarlığına çelenk koymasıyla yaşanan olaydır."},
+{q:"Saltanatın kaldırılması teklifini kim vermiştir?", a:"Sinop Milletvekili Rıza Nur vermiştir."},
+{q:"Halkevleri kimin döneminde kapatılmıştır?", a:"1951'de Adnan Menderes döneminde kapatılmıştır."},
+{q:"İstiklal Marşımızın ilk bestecisi kimdir?", a:"Ali Rıfat Çağatay'dır."},
+{q:"Lozan'da taviz verilmeyen konular nelerdir?", a:"Ermeni yurdu, azınlık hakları, kapitülasyonlar ve yabancı okullardır."},
+{q:"Osmanlıya karşı isyan eden en son devlet hangisidir?", a:"Ermenilerdir."},
+{q:"Batı Anadolu'da Yunanlılara karşı direnişin merkezi neresidir?", a:"Balıkesir'dir."},
+{q:"İstanbul'dan Ankara'ya sevkiyat yapmak amacıyla kurulan yararlı cemiyet hangisidir?", a:"Gizli Karakol Cemiyeti'dir."},
+{q:"Türk Tarih Kurumu'nun çıkardığı ilk kitap hangisidir?", a:"Milli Tarih Tezimiz'dir."},
+{q:"Tanzimat Fermanı ne zaman ve kim tarafından ilan edildi?", a:"3 Kasım 1839'da Abdülmecit tarafından ilan edildi."},
+{q:"1. Meşrutiyet kim döneminde ve ne zaman ilan edildi?", a:"II. Abdülhamit döneminde, 23 Aralık 1876'da ilan edildi."},
+{q:"Mustafa Kemal, Yıldırım Orduları 7. Ordu komutanı olarak nerede görev yaptı?", a:"Suriye-Filistin cephesinde görev yaptı."},
+{q:"İstanbul Hükümeti ile Ankara Hükümeti'nin yaptığı ilk görüşme hangisidir?", a:"Bilecik Görüşmeleri'dir."},
+{q:"Affı olmayan tek suç hangisidir?", a:"Orman suçlarıdır."},
+{q:"Atatürk'ün ilk kitabı hangisidir?", a:"Subay ve Komutan ile Söyleşi'dir."},
+{q:"Kazai rüşt nedir?", a:"Ergin olmayan birinin mahkeme kararıyla reşit hâle getirilmesidir; 15 yaşın doldurulması, anne baba rızası ve çocuğun yararı gerekir."},
+{q:"Arabuluculuk nedir?", a:"Tarafların uyuşmazlıklarını tarafsız üçüncü bir kişi yardımıyla, mahkemeye gitmeden çözebilecekleri yöntemdir."},
+{q:"Kaymakamın atamasını kim yapar?", a:"İçişleri Bakanlığı yapar."},
+{q:"Vali atamasını kim yapar?", a:"Cumhurbaşkanı yapar."},
+{q:"Başkanlık sistemi nedir?", a:"Devlet başkanının halk tarafından seçildiği, yasama ve yürütmenin sert ayrılığına dayanan sistemdir."},
+{q:"Müeyyide nedir?", a:"Yaptırım, cezadır."},
+{q:"Anayasa nedir?", a:"Bir devletin şeklini, yapısını, organlarını, kuruluş ve işleyişini ve vatandaşların ödev ve hürriyetlerini düzenleyen kurallar bütünüdür."},
+{q:"İstiklal Marşı'nın geçtiği ilk anayasa hangisidir?", a:"1982 Anayasası'dır."},
+{q:"Yararlı cemiyetler nerede birleşti?", a:"Sivas Kongresi'nde birleşti."},
+{q:"Atatürkçülüğün nitelikleri nelerdir?", a:"Akıl ve bilime dayanır, milli birlik ve beraberliğe önem verir, yurtta ve dünyada barışı esas alır."},
+{q:"Atatürk ilkelerinin bütünleyici ilkeleri nelerdir?", a:"Milli egemenlik, milli bağımsızlık, milli birlik ve beraberlik, yurtta sulh cihanda sulh, çağdaşlaşma-batılılaşma, bilimsellik-akılcılık, insan ve insanlık sevgisidir."},
+{q:"Kurtuluş Savaşı'nın ilk cephesi hangisidir?", a:"Doğu Cephesi'dir."},
+{q:"TBMM'nin ayaklanmalara karşı aldığı önlemler nelerdir?", a:"Hıyanet-i Vataniye Kanunu, İstiklal Mahkemeleri, karşı fetva ve İstanbul Hükümeti ile haberleşmenin kesilmesidir."},
+{q:"TBMM'nin yarı resmi organı olan gazete hangisidir?", a:"Hakimiyet-i Milliye'dir."},
+{q:"TBMM hangi tarihte açıldı?", a:"23 Nisan 1920'de açıldı."},
+{q:"Milli Kongre olarak adlandırılan kongre hangisidir?", a:"Sivas Kongresi'dir."},
+{q:"Temsil Heyeti yürütme yetkisini ilk nerede kullandı?", a:"Sivas Kongresi'nde, Ali Fuat Cebesoy'u Batı Cephesi komutanı olarak atayarak kullandı."},
+{q:"Bölgesel kongreler hangileridir?", a:"Balıkesir, Alaşehir, Nazilli ve Pozantı kongreleridir."},
+{q:"İstanbul Hükümeti'nin Mustafa Kemal'i Samsun'a gönderme nedeni nedir?", a:"Asayişin sağlanması, silahların toplanması, cemiyetlerin dağıtılması ve çatışmaların durdurulması içindir."},
+{q:"1. Balkan Savaşı'na katılan ülkeler hangileridir?", a:"Osmanlı'ya karşı Yunanistan, Bulgaristan, Sırbistan ve Karadağ'dır."},
+{q:"Meşrutiyet dönemi fikir akımları nelerdir?", a:"Osmanlıcılık, İslamcılık, Türkçülük ve Batıcılıktır."},
+{q:"Türkiye'nin Amerikan Bilim ve Sanat Akademisi'nin ilk ve tek Türk üyesi kimdir?", a:"Oktay Sinanoğlu'dur."},
+{q:"Talimat nedir?", a:"Bir yer savcılığı veya mahkemesinin, diğer yer savcılık veya mahkemesinden soruşturma ya da dava için bir işlem yapmasını istemesidir."},
+{q:"İnfaz nedir?", a:"Yargılama sürecinin sona erip cezanın kesinleşmesinden sonra suçlunun belli şekillerde cezalandırılmasıdır."},
+{q:"Reddiyat nedir?", a:"Dava için yatırılan tutarların artması durumunda, artan tutarın yatırana geri ödenmesidir."},
+{q:"Tefhim nedir?", a:"Mahkemenin son duruşmasında verilen nihai kararın, duruşmada hazır bulunan tarafa sözlü olarak bildirilmesidir."},
+{q:"Müsadere nedir?", a:"İşlenen bir suçla ilgili belirli eşya veya kazançların mülkiyetinin devlete aktarılmasıdır."},
+{q:"Hukuk kaleminde kimler vardır?", a:"Bir yazı işleri müdürü, yeterli sayıda zabıt kâtibi, memur, mübaşir, hizmetli ve diğer görevliler bulunur."},
+{q:"Kıymetli evrak nedir?", a:"Poliçe, çek, bono, ipotekli borç senetleri ve şirketlerdeki pay senetleri gibi belgelerdir."},
+{q:"Katibin reddi hangi durumlarda söz konusu olur?", a:"Kendisine, eşine, alt/üst soyuna, evlatlığına veya belirli derecedeki hısımlarına ait davalarda, nişanlısının davasında veya taraflardan birinin vekili ya da vasisi olduğu davalarda görev yapamaz."},
+{q:"Davaname nedir?", a:"Cumhuriyet savcısının, ceza davası niteliği taşımayan bir konuyu hukuk mahkemelerinde görülmek üzere dava olarak açtığı belgedir."},
+{q:"Hukuk mahkemeleri nelerdir?", a:"Sulh Hukuk Mahkemesi, Asliye Hukuk Mahkemesi ve özel kanunlarla kurulan diğer hukuk mahkemeleridir."},
+{q:"Ceza mahkemeleri nelerdir?", a:"Sulh Ceza Mahkemesi, Asliye Ceza Mahkemesi, Çocuk Mahkemesi, Ağır Ceza Mahkemesi ve İnfaz Hâkimliğidir."},
+{q:"Asliye Hukuk Mahkemesinin görevleri nelerdir?", a:"Tazminat, vasiyetname ve miras sözleşmesinin iptali, analık-babalık, mirastan mal kaçırma, tapu iptal-tescil ve alacak davalarına bakar."},
+{q:"Aile Mahkemesinin baktığı davalar nelerdir?", a:"Boşanma, evliliğin butlanı ya da iptali, nafaka, velayet, mal paylaşımı, soybağı, evlat edinme ve vesayet gibi davalara bakar."},
+{q:"Yüksek mahkemeler nelerdir?", a:"Anayasa Mahkemesi, Uyuşmazlık Mahkemesi, Yargıtay ve Danıştay'dır."},
+{q:"Yargıtay'ın görevleri nelerdir?", a:"Adli yargı alanında temyiz incelemesi yapmak ve hukuk-ceza mahkemesi kararlarını son inceleme mercii olarak karara bağlamaktır."},
+{q:"Danıştay'ın görevleri nelerdir?", a:"İdari uyuşmazlık davalarına bakmak, temyiz incelemesi yapmak ve bazı davalara ilk derece mahkemesi olarak bakmaktır."},
+{q:"Anayasa Mahkemesinin görevleri nelerdir?", a:"Kanunların ve KHK'ların anayasaya uygunluğunu denetlemek, Yüce Divan sıfatını kullanmak, siyasi partileri denetlemek ve bireysel başvuruları karara bağlamaktır."},
+{q:"HSYK'nın görevleri nelerdir?", a:"Hâkim ve savcıların mesleğe kabul ve atama işlemleriyle disiplin ve uzaklaştırma kararlarını yürütmektir."},
+{q:"Adli Yargı Komisyonu nedir?", a:"Ağır ceza mahkemesi bulunan yerlerde, hâkim ve savcı dışındaki personelin atama, nakil ve disiplin işlerine bakan komisyondur."},
+{q:"Şüpheli ile sanık arasındaki fark nedir?", a:"Şüpheli soruşturma evresinde suç şüphesi altında olan kişidir; sanık ise kovuşturmanın başlamasından hükmün kesinleşmesine kadar suç şüphesi altında olan kişidir."},
+{q:"Hâkim kime denir?", a:"Mahkemelerde davaları hukuk kuralları çerçevesinde karara bağlayan kişidir."},
+{q:"Savcı kime denir?", a:"İhbar, şikâyet veya farklı yollarla kanuna aykırı bir durum tespit ettiğinde, konuyu hukuk çerçevesinde inceleyip araştırma ve soruşturma yapan kişidir."},
+{q:"Hukuk nedir?", a:"Toplumu düzenleyen ve devlet yaptırımıyla güçlendirilmiş kurallar bütünüdür."},
+{q:"Adalet nedir?", a:"Hak ve hukuka uygunluktur."},
+{q:"Hak nedir?", a:"Hukukun ve adaletin bireylere sağladığı kazanımlardır."},
+{q:"Devlet memuruna verilen disiplin cezaları nelerdir?", a:"Uyarma, kınama, aylıktan kesme, kademe ilerlemesinin durdurulması ve memurluktan çıkarmadır."},
+{q:"Yargı bağımsızlığı nedir?", a:"Yargılama makamının kararlarında hiçbir etki ve baskı altında kalmamasıdır."},
+{q:"Devlet memurunun ölüm izni kaç gündür?", a:"7 gündür."},
+{q:"Müddetname nedir?", a:"Kesinleşmiş cezanın süresini gösteren belgedir."},
+{q:"İlam nedir?", a:"Bir davanın mahkemece nasıl bir hükme bağlandığını gösteren resmi belgedir."},
+{q:"Taksirli suç nedir?", a:"Dikkat ve özen yükümlülüğüne aykırı olarak bir davranışın sonucunun öngörülmeden gerçekleştirilmesidir."},
+{q:"Yasama, yürütme ve yargı organları hangileridir?", a:"Yasama TBMM, yürütme Cumhurbaşkanı, yargı ise bağımsız mahkemelerdir."},
+{q:"Adli emanet nedir?", a:"Suçta kullanılan, suç için hazırlanan veya suçtan elde edilen her türlü eşyanın korunduğu yerdir."},
+{q:"Normlar hiyerarşisi nedir?", a:"Yönetmeliklerin kanunlara, kanunların da Anayasaya uygun olmasını gösteren sistemdir."},
+{q:"Kaymakam Kemal Bey kimdir?", a:"Yozgat'ta kaymakamlık yaptığı sırada Ermeni tehciri sırasında sorumlu tutulup idamına karar verilen, ancak yargılanmasında iddiaları reddeden ve ölümünden sonra 'şehid-i millî' unvanı verilen kişidir."},
+{q:"Avrupa İnsan Hakları Mahkemesi neredir?", a:"Fransa'nın Strazburg (Strasbourg) kentindedir."},
+{q:"Uluslararası Adalet Divanı neredir?", a:"Hollanda'nın Lahey kentindedir; Birleşmiş Milletlerin yargı organıdır."},
+{q:"Yargı organları nelerdir?", a:"İdari yargı, adli yargı ve yüksek mahkemelerdir."},
+{q:"Posta memuru muhatabı evde bulamazsa ne yapar?", a:"Haber kâğıdı yapıştırarak en yakın komşu, kapıcı veya yöneticiye bildirir; adresten ayrılmışsa evrakı muhtar, ihtiyar heyeti veya zabıta amirine imza karşılığı teslim eder."},
+{q:"Taksirli yaralama nedir?", a:"Failin yaralamayı istemediği, ancak gerekli özeni göstermemesi nedeniyle meydana gelen yaralama suçudur."},
+{q:"Sanık ile hükümlü arasındaki fark nedir?", a:"Sanık, kovuşturmanın başlamasından hükmün kesinleşmesine kadar suç şüphesi altında olan kişidir; hükümlü, ceza yargılaması sonunda hakkında mahkûmiyet kararı verilen kişidir."},
+{q:"Bireysel başvuru nedir?", a:"Anayasada güvence altına alınan temel hak ve özgürlüklerinden biri kamu gücü işlemiyle ihlal edilen kişilerin Anayasa Mahkemesine yapabildiği başvurudur."},
+{q:"Müşteki/mağdur kime denir?", a:"Suçtan zarar gören kişidir."},
+{q:"Mahkeme kalemleri nelerdir?", a:"Hukuk mahkemesi kalemleri, ceza mahkemesi kalemleri, Cumhuriyet başsavcılığı kalemleri, bölge adliye mahkemesi kalemleri ve adalet komisyonu kalemleridir."},
+{q:"AİHM'ye kimler başvurabilir?", a:"Avrupa İnsan Hakları Sözleşmesiyle güvence altına alınan temel hakları ihlal edilen gerçek kişiler, hükümet dışı kuruluşlar, çocuklar ve kişi grupları başvurabilir."},
+{q:"Cumhurbaşkanı hangi suçtan dolayı yargılanır?", a:"Yalnızca vatana ihanetten dolayı yargılanır; görevi nedeniyle yaptığı işlemlerden dolayı yargılanamaz."},
+{q:"Anayasa Mahkemesi üyeleri nasıl seçilir?", a:"15 üyeden oluşur; 3 üyeyi meclis, 12 üyeyi Cumhurbaşkanı seçer."},
+{q:"İsticvap nedir?", a:"Bir tarafın kendi aleyhine olan hususlar hakkında mahkeme tarafından sorguya çekilmesidir."},
+{q:"Milletler Cemiyeti nedir?", a:"10 Ocak 1920'de İsviçre'de kurulan, günümüz Birleşmiş Milletler'in temeli sayılan, ülkeler arası sorunların barışçıl çözümünü amaçlayan organizasyondur."},
+{q:"Hukuk davalarında kesin deliller nelerdir?", a:"Kesin hüküm, ikrar, senet ve yemindir."},
+{q:"Adli tatilde görülen davalar nelerdir?", a:"Nafaka davaları, nüfus kayıtlarının düzeltilmesi, çekişmesiz yargı işleri, ivedi görülmesine karar verilen davalar, ticari defter ve kıymetli evrak kaybından doğan davalardır."},
+{q:"Zor kullanma nedir?", a:"Yakalanması veya dağıtılması gereken kişi ya da topluluğun direnmesi veya saldırıda bulunması durumunda bunu etkisiz hâle getirmek için kullanılan kuvvettir."},
+{q:"Anayasa Mahkemesi başkanını kim seçer?", a:"Üyeler kendi aralarından, gizli oyla, üye tam sayısının salt çoğunluğuyla 4 yıllığına seçer."},
+{q:"Memurluktan çıkarma cezasını hangi kurum inceler?", a:"Yüksek Disiplin Kurulu inceler."},
+{q:"Adliyede çalışan personeller kimlerdir?", a:"Hâkimler, savcılar, yazı işleri müdürleri, icra müdür ve yardımcıları, kâtipler, mübaşirler, hizmetliler, şoförler, teknisyenler ve güvenlik personelleridir."},
+{q:"Zabıt kâtibinin amirleri kimlerdir?", a:"Yazı işleri müdürü, mahkeme veya komisyon başkanıdır; Cumhuriyet başsavcılıklarında ise Cumhuriyet başsavcısı veya vekilidir."},
+{q:"Milletvekilliğinin düşürülmesi nasıl olur?", a:"Meclis çalışmalarına özürsüz ve izinsiz olarak bir ay içinde toplam 5 birleşim günü katılmayan milletvekilinin vekilliğinin düşmesine, genel kurulca üye tam sayısının salt çoğunluğuyla karar verilir."},
+{q:"Disiplin hapsi ile tazyik hapsi arasındaki fark nedir?", a:"Tazyik hapsi bir yükümlülüğün yerine getirilmemesi nedeniyle verilir ve yerine getirilmesiyle sona erer; disiplin hapsi ise bir yükümlülüğün yerine getirilmemesinden değil, düzeni korumak amacıyla verilir."},
+{q:"İstida nedir?", a:"Bir isteği veya dileği bildirmek amacıyla ilgili makama sunulan resmi dilekçedir."},
+{q:"Layiha nedir?", a:"Bir konu hakkında görüş, öneri veya gerekçe bildiren yazı ya da tasarıdır."},
+{q:"Arzuhal nedir?", a:"Bir dileği veya şikâyeti belirtmek için makama sunulan dilekçenin eski dildeki adıdır."},
+{q:"Zabıt nedir?", a:"Duruşmada söylenenlerin ve yapılan işlemlerin tutanağa geçirilmesidir."},
+{q:"Tutanak nedir?", a:"Bir işlemin yapıldığını ve içeriğini gösteren, düzenlenirken imzalanan resmi belgedir."},
+{q:"Vekâletname nedir?", a:"Bir kişinin, başka bir kişiyi kendi adına iş ve işlem yapmakla yetkilendirdiğini gösteren belgedir."},
+{q:"İbraname nedir?", a:"Bir borcun ödendiğini ve borçlunun bu borçtan ibra edildiğini gösteren belgedir."},
+{q:"Kesin hüküm nedir?", a:"Kanun yollarının tamamı tüketilmiş, artık değiştirilmesi mümkün olmayan mahkeme kararıdır."},
+{q:"Muhtıra nedir?", a:"Bir tarafın diğerine bir hususu hatırlatmak veya bildirmek amacıyla gönderdiği resmi yazıdır."},
+{q:"İhtarname nedir?", a:"Bir hakkın kullanılması veya bir yükümlülüğün yerine getirilmesi için noter aracılığıyla yapılan resmi bildirimdir."},
+{q:"Duruşma tutanağını kim tutar?", a:"Zabıt kâtibi tutar."},
+{q:"Naip hâkim nedir?", a:"Bir mahkemenin, yargı çevresi dışında yapılması gereken bir işlemi görmek üzere görevlendirdiği hâkimdir."},
+{q:"Tevzi nedir?", a:"Dava ve işlerin, ilgili birimler arasında iş yüküne göre dağıtılmasıdır."},
+{q:"İlk derece mahkemesi nedir?", a:"Bir uyuşmazlığa ilk olarak bakan, davanın açıldığı mahkemedir."},
+{q:"Adli tatil hangi tarihler arasındadır?", a:"20 Temmuz ile 31 Ağustos arasındadır."},
+{q:"Adli yardım (hukuki yardım) nedir?", a:"Ekonomik durumu yetersiz olan kişilere dava ve harç giderlerinin karşılanmasında sağlanan devlet desteğidir."},
+{q:"Harç nedir?", a:"Devletin sunduğu belirli hizmetler karşılığında alınan bedeldir."},
+{q:"Vekâlet ücreti nedir?", a:"Avukatın, verdiği hukuki hizmet karşılığında hak ettiği ücrettir."},
+{q:"Islah nedir?", a:"Tarafların, dava dilekçesindeki maddi vakıaları kısmen veya tamamen değiştirebilmesi imkânıdır."},
+{q:"Feragat nedir?", a:"Davacının, dava konusu yaptığı haktan tamamen vazgeçmesidir."},
+{q:"Davada kabul nedir?", a:"Davalının, davacının ileri sürdüğü talebi kısmen veya tamamen kabul etmesidir."},
+{q:"Sulh (uzlaşma) nedir?", a:"Tarafların, dava konusu uyuşmazlık hakkında anlaşarak davayı sona erdirmesidir."},
+{q:"Bekletici mesele nedir?", a:"Bir davanın sonuçlandırılabilmesi için önce çözülmesi gereken başka bir hukuki sorundur."},
+{q:"İstirdat davası nedir?", a:"Yanlış veya fazla ödenmiş bir bedelin geri istenmesi amacıyla açılan davadır."},
+{q:"Muvazaa nedir?", a:"Tarafların gerçek iradelerini gizleyip görünürde farklı bir işlem yapmış gibi davranmalarıdır."},
+{q:"Nafaka nedir?", a:"Bir kişinin, bakmakla yükümlü olduğu kişiye kanunen ödediği geçim yardımıdır."},
+{q:"Vasi kimdir?", a:"Kısıtlanmış kişilerin mal ve haklarını korumak üzere mahkemece atanan kişidir."},
+{q:"Ceza davalarında temyiz süresi kaç gündür?", a:"Kararın tebliğinden itibaren 15 gündür."},
+{q:"İstinaf başvuru süresi ne kadardır?", a:"Kararın tebliğinden itibaren 2 haftadır."},
+];
+
+/* ---------------- Similarity engine ---------------- */
+const STOPWORDS = new Set(["bir","bu","şu","ve","ile","için","gibi","olan","olarak","olup",
+  "kadar","göre","hangi","nedir","denir","denilir","kişi","kişidir","kişiye","yani","de","da",
+  "ki","mi","mı","mu","mü","ne","neden","ya","ise","veya","veyahut","tarafından","içinde",
+  "üzere","dair","ilişkin","dır","dir","tir","tur","dur","edilen","edilir","olması","olduğu",
+  "durumda","halinde","şeklinde","ancak","fakat","değil","daha","en","çok","az",
+  "diğer","diğerleri","arasında","aralarında","altında","altına","üzerinde","üzerine",
+  "sırasında","nelerdir","kimdir","kimlerdir","nerededir","neresidir"]);
+
+function normalize(str){
+  return str
+    .replace(/İ/g,'i').replace(/I/g,'ı')
+    .toLocaleLowerCase('tr-TR')
+    .replace(/[.,;:!?()"'’‘""«»]/g,' ')
+    .replace(/\s+/g,' ')
+    .trim();
+}
+
+function tokenize(str){
+  return normalize(str).split(' ').filter(w => w.length > 2 && !STOPWORDS.has(w));
+}
+
+/* ---------------- Konu kategorileri ----------------
+   Her sorunun konusu (tarih / kalem mevzuatı / hukuk terimleri /
+   genel kültür), soru+cevap metnindeki anahtar kelimelere bakılarak
+   otomatik belirlenir. Öncelik sırası: tarih -> kalem -> hukuk ->
+   genel kültür (fallback). */
+const TARIH_KW = [
+  "atatürk","inkılap","inkilap","cumhuriyet",
+  "osmanlı","osmanli","kongre","antlaşma",
+  "antlasma","ateşkes","atesk","savaş",
+  "savas","cephe","halife","halifelik",
+  "padişah","padisah","sultan","saltanat",
+  "tbmm","meclis","meşrutiyet","mesrutiyet",
+  "tanzimat","kanun-i esasi","kapitülasyon","kapitulasyon",
+  "lozan","sevr","mondros","mudanya",
+  "gümrü","gumru","balkan","milletler cemiyeti",
+  "hareket ordusu","istiklal","kurtuluş savaşı","kurtulus savasi",
+  "yararlı cemiyet","yararli cemiyet","misak","hıyanet",
+  "hiyanet","razgrad","talas savaşı","talas savasi",
+  "iskit","sakalar","hunlar","milli mücadele",
+  "milli mucadele","işgal","isgal","yunan",
+  "fransız","fransiz","bulgar","sırbistan",
+  "sirbistan","karadağ","karadag","selanik",
+  "manastır","manastir","sofya","samsun",
+  "erzurum kongresi","sivas kongresi","amasya genelgesi","cumhuriyetçilik",
+  "cumhuriyetcilik","milliyetçilik","milliyetcilik","halkçılık",
+  "halkcilik","devletçilik","devletcilik","laiklik",
+  "çağdaşlaşma","cagdaslasma","bilimsellik","akılcılık",
+  "akilcilik","atatürkçülük","ataturkculuk","halkevi",
+  "hatay","kurtuluş","kurtulus","sadabat",
+  "montrö","montro","boğazlar sözleşmesi","bogazlar sozlesmesi",
+  "nusret","mayın gemisi","mayin gemisi","halkev",
+  "tarih kurumu",
+];
+const KALEM_KW = [
+  "kalem","zabıt kâtib","zabit katib","kâtib",
+  "katib","mübaşir","mubasir","yazı işleri müdür",
+  "yazi isleri mudur","icra müdür","icra mudur","idari işler müdür",
+  "idari isler mudur","defteri","defter nedir","uyap",
+  "e-imza","tevzi","talimat defteri","zimmet defteri",
+  "adalet komisyonu","posta memur","hizmetli","adliyede çalışan",
+  "adliyede calisan","idari işler müdürünün","komisyon üyelerini","kalem teşkilat",
+  "kalem teskilat",
+];
+const HUKUK_KW = [
+  "dava","hukuk","ceza","mahkeme",
+  "hâkim","hakim","savcı","savci",
+  "hüküm","hukum","delil","temyiz",
+  "istinaf","ıslah","islah","feragat",
+  "nafaka","vasi","muvazaa","sulh",
+  "tanık","tanik","sanık","sanik",
+  "şüpheli","supheli","hükümlü","hukumlu",
+  "yargı","yargi","anayasa","kanun",
+  "haciz","ilam","tebliğ","teblig",
+  "tefhim","müsadere","musadere","zamanaşımı",
+  "zamanasimi","beraat","adli","idari",
+  "disiplin","vekâlet","vekalet","istida",
+  "layiha","arzuhal","ihtarname","muhtıra",
+  "muhtira","vekaletname","vekâletname","ibraname",
+  "hak ","müdafi","mudafi","bilirkişi",
+  "bilirkisi","zabıt","zabit","tutanak",
+  "gaip","istinabe","kambiyo","konkordato",
+  "müeyyide","muyyide","kesin hüküm","kesin hukum",
+  "fiil ehliyeti","hak ehliyeti","velayet","ibra",
+  "temellük","temelluk","kaza","icra ve iflas",
+  "şirket","sirket","memur","kaymakam",
+  "vali","hsyk","hsk","danıştay",
+  "danistay","yargıtay","yargitay","suç",
+  "suc","tazyik","müzekkere","muzekkere",
+  "tekit","kovuşturma","kovusturma","hagb",
+  "ihzar","müdafaa","mudafaa","müşteki",
+  "musteki","mağdur","magdur","zor kullanma",
+  "mülkün temeli","mulkun temeli","milli güvenlik kurul","milli guvenlik kurul",
+  "kamu hizmeti","düzenleyici işlem","duzenleyici islem","başkanlık sistemi",
+  "baskanlik sistemi","adalet bakan","harç","harc",
+  "seçim kurulu","secim kurulu","ysk",
+];
+
+const CATEGORY_LABELS = {
+  tarih: "Atatürk İlkeleri ve İnkılap Tarihi",
+  kalem: "Kalem Mevzuatı",
+  hukuk: "Hukuk Terimleri",
+  genel: "Genel Kültür"
+};
+
+function categorizeQuestion(item){
+  const text = normalize(item.q + ' ' + item.a);
+  if(TARIH_KW.some(kw => text.includes(kw))) return 'tarih';
+  if(KALEM_KW.some(kw => text.includes(kw))) return 'kalem';
+  if(HUKUK_KW.some(kw => text.includes(kw))) return 'hukuk';
+  return 'genel';
+}
+
+/* Concept groups: words that mean roughly the same thing in this
+   domain are grouped so paraphrased (but correct) answers are
+   recognized, not just verbatim keyword matches. Membership is by
+   prefix, since Turkish is agglutinative (mal / malına / malvarlığı
+   should all count as the same idea). */
+const CONCEPT_GROUPS = [
+  ["mal","varlık","eşya","para","aylık","gayrimenkul","menkul"],
+  ["borç","borçlu"],
+  ["alacak","alacaklı"],
+  ["konul","alıkon","zapt","müsader","zoralım","el koy","elkoy"],
+  ["öde","tediye"],
+  ["karar","hüküm"],
+  ["mahkeme","yargı","yargıla"],
+  ["dava","kovuştur"],
+  ["savcı","başsavcı"],
+  ["hakim","yargıç"],
+  ["ceza","yaptırım","cezaevi","hapis"],
+  ["infaz"],
+  ["kesin"],
+  ["süre","zaman","vade"],
+  ["kayıt","kaydet","kaydedil"],
+  ["defter"],
+  ["memur","görevli","personel","çalış"],
+  ["görev","vazife"],
+  ["bölüm","dağıt","dağılım","paylaş","taksim"],
+  ["ata","atan","atama"],
+  ["izin","icazet"],
+  ["resmi"],
+  ["evrak","belge","yazı","kâğıt","kagıt"],
+  ["dosya"],
+  ["taraf"],
+  ["kişi","şahıs","kimse"],
+  ["kanun","yasa","mevzuat"],
+  ["hak","hukuk"],
+  ["tutukl","tutuk"],
+  ["serbest","salıver"],
+  ["şüpheli"],
+  ["sanık"],
+  ["suç","fiil"],
+  ["delil","kanıt"],
+  ["itiraz"],
+  ["temyiz"],
+  ["soruştur"],
+  ["iddi"],
+  ["tebliğ","bildir","duyur","ulaştır"],
+  ["tekit","yinele","tekrar","üstele"],
+  ["denetim","gözet","kontrol"],
+  ["adalet"],
+  ["komisyon"],
+  ["bakanlık"],
+  ["devlet"],
+  ["güven"],
+  ["düzen","disiplin"],
+  ["yetki"],
+  ["sorumlu"],
+  ["reddet","red"],
+  ["kabul"],
+  ["onay","onama"],
+  ["boz"],
+  ["incele"],
+];
+
+function conceptOf(token){
+  for(let i=0;i<CONCEPT_GROUPS.length;i++){
+    for(const prefix of CONCEPT_GROUPS[i]){
+      if(token.startsWith(prefix)) return 'C'+i;
+      // Tolerate Turkish consonant softening at the root boundary
+      // (alacak -> alacağın, aylık -> aylığına, mal -> malına vs.)
+      if(prefix.length >= 4 && token.startsWith(prefix.slice(0,-1))) return 'C'+i;
+    }
+  }
+  return token;
+}
+
+function levenshtein(a,b){
+  const m=a.length, n=b.length;
+  if(m===0) return n;
+  if(n===0) return m;
+  const dp = Array.from({length:m+1},(_,i)=>[i,...Array(n).fill(0)]);
+  for(let j=0;j<=n;j++) dp[0][j]=j;
+  for(let i=1;i<=m;i++){
+    for(let j=1;j<=n;j++){
+      const cost = a[i-1]===b[j-1] ? 0 : 1;
+      dp[i][j] = Math.min(dp[i-1][j]+1, dp[i][j-1]+1, dp[i-1][j-1]+cost);
+    }
+  }
+  return dp[m][n];
+}
+
+function tokenSimilarity(a,b){
+  const dist = levenshtein(a,b);
+  const maxLen = Math.max(a.length,b.length) || 1;
+  return 1 - dist/maxLen;
+}
+
+// Evaluate: returns 'correct' | 'close' | 'wrong'
+function evaluate(userText, correctText){
+  const userNorm = normalize(userText);
+  if(!userNorm) return 'wrong';
+
+  const correctTokens = tokenize(correctText);
+  const userTokens = tokenize(userText);
+
+  // Short factual answer (place/name/number) — few key tokens
+  if(correctTokens.length <= 3){
+    const correctNorm = normalize(correctText);
+    // direct containment
+    if(correctNorm.includes(userNorm) && userNorm.length >= 3) return 'correct';
+    // best token match against any user token
+    let best = 0;
+    correctTokens.forEach(ct=>{
+      userTokens.forEach(ut=>{
+        best = Math.max(best, tokenSimilarity(ct,ut));
+      });
+      // also compare against full user string for very short answers
+      best = Math.max(best, tokenSimilarity(ct, userNorm));
+    });
+    if(best >= 0.82) return 'correct';
+    if(best >= 0.55) return 'close';
+    return 'wrong';
+  }
+
+  // Longer definitional answer — matched at the level of unique
+  // *concepts* rather than raw tokens. This matters because a
+  // correct answer often lists several near-synonyms for the same
+  // idea (mal/para/aylık, zabıt kâtibi/mübaşir/hizmetli...): if we
+  // counted each literal token, a good paraphrase that captures the
+  // idea once would look like it "missed" several keywords even
+  // though it captured the concept fully.
+  const correctConceptList = correctTokens.map(conceptOf);
+  const uniqueCorrectConcepts = [...new Set(correctConceptList)];
+  const userConceptSet = new Set(userTokens.map(conceptOf));
+
+  let matched = 0;
+  uniqueCorrectConcepts.forEach(cc=>{
+    if(userConceptSet.has(cc)){ matched++; return; }
+    const relatedTokens = correctTokens.filter((t,i)=>correctConceptList[i]===cc);
+    const hit = relatedTokens.some(ct =>
+      userTokens.some(ut => tokenSimilarity(ct,ut) >= 0.78 || ct.includes(ut) || ut.includes(ct))
+    );
+    if(hit) matched++;
+  });
+  const ratio = matched / uniqueCorrectConcepts.length;
+
+  // For long, detail-heavy answers (many distinct concepts — dates,
+  // procedural qualifiers, numbers etc.), requiring the SAME
+  // proportion of matches as a short answer unfairly punishes a
+  // reply that nails the core fact but skips secondary detail
+  // (e.g. "Üyeleri seçer" vs. the full "...gizli oyla, salt
+  // çoğunlukla, 4 yıllığına seçer"). The 'correct' bar still uses
+  // the full ratio — thoroughness still matters there — but 'close'
+  // uses a capped denominator so hitting a couple of the true core
+  // concepts in a long answer is enough to register as close
+  // instead of being marked flatly wrong.
+  const CLOSE_CAP = 6;
+  const closeRatio = matched / Math.min(uniqueCorrectConcepts.length, CLOSE_CAP);
+
+  if(ratio >= 0.65) return 'correct';
+  if(ratio >= 0.3 || closeRatio >= 0.3) return 'close';
+  return 'wrong';
+}
+
+/* ---------------- Quiz state & shuffle · V3 ---------------- */
+function shuffle(arr){
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
+  return a;
+}
+
+let order=[];
+let current=0;
+let score=0;
+let counts={correct:0,close:0,wrong:0};
+let answeredThisQuestion=false;
+let timerInterval=null;
+let timeLeft=45;
+const CHECKPOINT_EVERY=5;
+const REAL_INTERVIEW_BASE_QUESTIONS=10;
+let missedQuestions=[];
+let catStats={};
+let interviewMode='study';
+let commissionLevel='normal';
+let questionMode='personalized';
+let followUpCount=0;
+let baseAnsweredCount=0;
+let pendingFollowUp=null;
+let profile={};
+let answerLog=[];
+let controlledUnknownCount=0;
+let introAnalysis=null;
+let questionStartedAt=0;
+let voiceUsedThisQuestion=false;
+let recognition=null;
+let recognizing=false;
+let recognitionSeed='';
+let askedQuestionKeys=new Set();
+let sourceUsage={profile:0,intro:0,last_answer:0,memory:0,competency:0,knowledge:0};
+const HISTORY_KEY='fkaInterviewHistoryV3';
+const PROFILE_KEY='fkaInterviewProfileV3';
+
+const COMMISSION_LABELS={normal:'Normal',challenging:'Zorlayıcı',realistic:'Gerçekçi'};
+const ENGINE_SOURCE_LABELS={
+  profile:'Aday Profili', intro:'Kendini Tanıtma', last_answer:'Son Verilen Cevap', memory:'Komisyon Hafızası',
+  competency:'Zabıt Kâtipliği Yetkinlikleri', knowledge:'Bilgi Soru Bankası'
+};
+const COMPETENCY_BANK=[
+  {q:'Yoğun bir duruşma sırasında yaptığınız bir yazım veya kayıt hatasını fark ettiniz. Nasıl hareket edersiniz?',a:'Hatayı gizlemeden kontrol etmek, yetki ve usule uygun biçimde gerekli kişiye bildirmek, doğru kaydı sağlamak ve tekrarını önleyecek dikkat tedbiri almak beklenir.',_criteria:[['hata','yanlış','yanlis'],['bildir','amir','müdür','mudur','hakim','hâkim'],['düzelt','duzelt','kontrol'],['tekrar','önlem','onlem']]},
+  {q:'Bir vatandaş, dosyada bulunan ancak paylaşmaya yetkili olmadığınız bir bilgiyi ısrarla istiyor. Nasıl davranırsınız?',a:'Gizlilik ve yetki sınırını korumak, kişiyi uygun usul ve birime yönlendirmek, tartışmaya girmeden sakin ve tarafsız kalmak beklenir.',_criteria:[['gizli','gizlilik','mahrem'],['yetki','yetkili'],['yönlendir','yonlendir','amir','müdür','mudur'],['sakin','tarafsız','tarafsiz']]},
+  {q:'Aynı anda birden fazla acil iş verildiğinde işleri nasıl önceliklendirirsiniz?',a:'İşlerin aciliyetini, sürelerini ve amir talimatlarını dikkate alarak planlama yapmak; gerektiğinde amire bilgi verip düzenli şekilde ilerlemek beklenir.',_criteria:[['öncelik','oncelik','acil'],['süre','sure','plan'],['amir','talimat'],['bilgi','iletişim','iletisim']]},
+  {q:'Bir üstünüzün verdiği talimatı tam olarak anlayamadığınızda ne yaparsınız?',a:'Varsayımda bulunmadan uygun ve saygılı biçimde açıklama istemek, talimatı netleştirmek ve doğru uygulamak beklenir.',_criteria:[['sor','açıklama','aciklama','netleştir','netlestir'],['saygı','saygi'],['talimat'],['doğru','dogru','uygula']]},
+  {q:'Duruşma sırasında taraflardan biri size öfkeli ve kırıcı biçimde konuşursa nasıl davranırsınız?',a:'Sakinliği korumak, kişiselleştirmemek, görev ve yetki sınırları içinde tarafsız davranmak ve gerektiğinde yetkili kişiden destek istemek beklenir.',_criteria:[['sakin','soğukkanlı','sogukkanli'],['tarafsız','tarafsiz'],['yetki','görev','gorev'],['amir','destek','müdür','mudur']]},
+  {q:'Zabıt kâtipliğinde hız ile doğruluk arasında nasıl bir denge kurarsınız?',a:'Hızın önemli olduğunu ancak doğruluk, dikkat ve usule uygunluğun öncelikli olduğunu; hızın düzenli çalışma ve pratikle artırılması gerektiğini belirtmesi beklenir.',_criteria:[['hız','hiz'],['doğru','dogru','dikkat'],['kontrol'],['pratik','çalış','calis']]},
+  {q:'Görev sırasında kişisel olarak tanıdığınız birinin dosyasıyla karşılaşırsanız nasıl davranırsınız?',a:'Tarafsızlık ve gizlilik ilkelerine uygun davranmak, kişisel ilişkiyi göreve yansıtmamak ve gerekiyorsa amire bilgi vermek beklenir.',_criteria:[['tarafsız','tarafsiz'],['gizli','gizlilik'],['kişisel','kisisel','ilişki','iliski'],['amir','bildir']]},
+  {q:'İş yükünün çok arttığı bir günde dikkatinizin düştüğünü fark ederseniz ne yaparsınız?',a:'Panik yapmadan işi planlamak, kısa kontrollerle hata riskini azaltmak, öncelikleri düzenlemek ve gerektiğinde amirle iletişim kurmak beklenir.',_criteria:[['plan','öncelik','oncelik'],['kontrol','hata'],['sakin','panik'],['amir','iletişim','iletisim']]},
+  {q:'Yeni bir UYAP işlemini veya kalem uygulamasını bilmediğinizi fark ettiğinizde nasıl hareket edersiniz?',a:'Tahmin ederek işlem yapmak yerine mevzuat ve kurum içi kaynaklardan öğrenmek, yetkili veya deneyimli personele danışmak ve doğru uygulamayı öğrenmek beklenir.',_criteria:[['öğren','ogren','mevzuat','kaynak'],['danış','danis','sor'],['yetkili','deneyimli','amir'],['doğru','dogru']]},
+  {q:'Yaptığınız bir hatanın iş arkadaşınız tarafından fark edilip size söylendiği bir durumda nasıl tepki verirsiniz?',a:'Savunmacı davranmadan hatayı kontrol etmek, doğruysa sorumluluk almak, düzeltmek ve geri bildirimi gelişim için kullanmak beklenir.',_criteria:[['kontrol'],['sorumluluk','kabul'],['düzelt','duzelt'],['geri bildirim','öğren','ogren']]}
+];
+const RUBRIC_LABELS={
+  knowledge:'Bilgi düzeyi', expression:'Kendini ifade', clarity:'Cevapların netliği',
+  fluency:'Konuşma akıcılığı', brevity:'Gereksiz uzatmama', pressure:'Zorlayıcı sorulara tepki', intro:'Kendini tanıtma'
+};
+
+function clamp(n,min=0,max=100){ return Math.max(min,Math.min(max,Math.round(n))); }
+function average(arr,fallback=70){ return arr.length ? arr.reduce((a,b)=>a+b,0)/arr.length : fallback; }
+function resultPoints(result){ return result==='correct'?1:(result==='close'?.5:0); }
+function safeText(v){ return String(v||'').trim(); }
+function selectedRadioValue(name,fallback){ const el=document.querySelector('input[name="'+name+'"]:checked'); return el?el.value:fallback; }
+
+function resetCatStats(){ catStats={tarih:{correct:0,total:0},kalem:{correct:0,total:0},hukuk:{correct:0,total:0},genel:{correct:0,total:0}}; }
+
+/* ---------------- DOM ---------------- */
+const startCard=document.getElementById('startCard');
+const startBtn=document.getElementById('startBtn');
+const shuffleToggle=document.getElementById('shuffleToggle');
+const progressTrack=document.getElementById('progressTrack');
+const qTotal=document.getElementById('qTotal');
+const qText=document.getElementById('qText');
+const qNo=document.getElementById('qNo');
+const qIndex=document.getElementById('qIndex');
+const scoreLive=document.getElementById('scoreLive');
+const progressFill=document.getElementById('progressFill');
+const answerInput=document.getElementById('answerInput');
+const submitBtn=document.getElementById('submitBtn');
+const feedbackBox=document.getElementById('feedbackBox');
+const fbKey=document.getElementById('fbKey');
+const fbTitle=document.getElementById('fbTitle');
+const fbAnswer=document.getElementById('fbAnswer');
+const nextBtn=document.getElementById('nextBtn');
+const skipBtn=document.getElementById('skipBtn');
+const quizCard=document.getElementById('quizCard');
+const resultCard=document.getElementById('resultCard');
+const timerBadge=document.getElementById('timerBadge');
+const checkpointCard=document.getElementById('checkpointCard');
+const checkpointScore=document.getElementById('checkpointScore');
+const checkpointSub=document.getElementById('checkpointSub');
+const ckCorrect=document.getElementById('ckCorrect');
+const ckClose=document.getElementById('ckClose');
+const ckWrong=document.getElementById('ckWrong');
+const checkpointContinueBtn=document.getElementById('checkpointContinueBtn');
+const sessionControls=document.getElementById('sessionControls');
+const homeBtn=document.getElementById('homeBtn');
+const resetBtn=document.getElementById('resetBtn');
+const sessionLabel=document.getElementById('sessionLabel');
+const scoreSegment=document.getElementById('scoreSegment');
+const scoreDivider=document.getElementById('scoreDivider');
+const modeNote=document.getElementById('modeNote');
+const resultMeta=document.getElementById('resultMeta');
+const micBtn=document.getElementById('micBtn');
+const answerHint=document.getElementById('answerHint');
+const modeRadios=[...document.querySelectorAll('input[name="interviewMode"]')];
+const commissionRadios=[...document.querySelectorAll('input[name="commissionLevel"]')];
+const questionModeRadios=[...document.querySelectorAll('input[name="questionMode"]')];
+const profilePanel=document.getElementById('profilePanel');
+const profileEls={
+  name:document.getElementById('profileName'), age:document.getElementById('profileAge'), education:document.getElementById('profileEducation'),
+  education2:document.getElementById('profileEducation2'), city:document.getElementById('profileCity'), experience:document.getElementById('profileExperience'),
+  publicService:document.getElementById('profilePublicService'), courthouse:document.getElementById('profileCourthouse'), reason:document.getElementById('profileReason'),
+  spouseJob:document.getElementById('profileSpouseJob')
+};
+
+qTotal.textContent=QUESTIONS.length;
+
+/* ---------------- Profil ---------------- */
+function collectProfile(){
+  return Object.fromEntries(Object.entries(profileEls).map(([k,el])=>[k,safeText(el.value)]));
+}
+function saveProfile(){ profile=collectProfile(); try{ localStorage.setItem(PROFILE_KEY,JSON.stringify(profile)); }catch(e){} }
+function restoreProfile(){
+  let p={}; try{ p=JSON.parse(localStorage.getItem(PROFILE_KEY)||'{}')||{}; }catch(e){}
+  Object.entries(profileEls).forEach(([k,el])=>{ if(p[k]!=null) el.value=p[k]; }); profile=collectProfile();
+}
+function clearProfile(){ Object.values(profileEls).forEach(el=>el.value=''); profile={}; try{localStorage.removeItem(PROFILE_KEY);}catch(e){} }
+Object.values(profileEls).forEach(el=>el.addEventListener('change',saveProfile));
+document.getElementById('clearProfileBtn').addEventListener('click',clearProfile);
+restoreProfile();
+
+function profileHasDetails(p){ return [p.education,p.education2,p.city,p.experience,p.courthouse,p.reason,p.publicService,p.spouseJob].some(Boolean); }
+function placeSeemsDifferent(city,courthouse){
+  if(!city||!courthouse) return false;
+  const c=normalize(city); const t=normalize(courthouse); return c.length>2 && !t.includes(c);
+}
+
+function buildSelfIntroItem(){
+  return {q:'Kısaca kendinizden bahseder misiniz?',a:'Eğitim, ilgili deneyim ve zabıt kâtipliğiyle bağlantıyı kısa, düzenli ve profesyonel biçimde ifade etmesi beklenir.',_type:'intro',_personal:true};
+}
+function profileQuestionCandidates(p){
+  const arr=[];
+  if(placeSeemsDifferent(p.city,p.courthouse)){
+    arr.push({q:p.city+' şehrinde yaşadığınızı belirttiniz. Neden '+p.courthouse+' tercihi yaptınız?',a:'Tercihini bilinçli, gerçekçi ve göreve bağlılıkla açıklaması beklenir.',_type:'personal',_profileTopic:'location'});
+    arr.push({q:'Aileniz ve sosyal çevreniz '+p.city+' çevresindeyken '+p.courthouse+' bölgesinde uzun süre görev yapmak konusunda yaklaşımınız nedir?',a:'Görev yeri konusunda gerçekçi, tutarlı ve sorumluluk odaklı bir yaklaşım beklenir.',_type:'personal',_profileTopic:'location'});
+  }
+  if(p.spouseJob){
+    arr.push({q:'Eşinizin veya nişanlınızın '+p.spouseJob+' olarak görev yaptığını belirttiniz. Onun görev yeri değişirse kendi göreviniz ve olası tayin konusu hakkında yaklaşımınız nedir?',a:'Kendi kamu görevini ve kurumsal sürekliliği gözeten gerçekçi ve tutarlı bir yaklaşım beklenir.',_type:'personal',_profileTopic:'spouse'});
+    arr.push({q:'Eşinizin veya nişanlınızın mesleği nedeniyle farklı şehirlerde görev yapmanız gerekirse bu durumu nasıl yönetirsiniz?',a:'Ailevi koşulları inkâr etmeden, göreve bağlılık ve çözüm odaklılık göstermesi beklenir.',_type:'personal',_profileTopic:'spouse'});
+  }
+  if(p.education2){
+    arr.push({q:'Birden fazla bölüm bitirmişsiniz. Bu eğitimlerinize rağmen neden zabıt kâtipliğini kalıcı bir meslek olarak düşünüyorsunuz?',a:'Eğitim geçmişi ile meslek tercihini tutarlı ve uzun vadeli biçimde ilişkilendirmesi beklenir.',_type:'personal',_profileTopic:'education'});
+    arr.push({q:'İki farklı eğitim alanından edindiğiniz hangi beceriler zabıt kâtipliği görevinde size katkı sağlar?',a:'Eğitimden göreve aktarılabilir somut beceriler göstermesi beklenir.',_type:'personal',_profileTopic:'education'});
+  } else if(p.education){
+    arr.push({q:p.education+' mezuniyetiniz var. Kendi alanınızda çalışmak yerine neden zabıt kâtipliğini tercih ediyorsunuz?',a:'Meslek tercihinin bilinçli, tutarlı ve görevin gerekleriyle bağlantılı açıklanması beklenir.',_type:'personal',_profileTopic:'education'});
+    arr.push({q:p.education+' eğitiminizin zabıt kâtipliği görevine sağlayabileceği somut bir katkı söyler misiniz?',a:'Eğitim ile görevin gerektirdiği dikkat, iletişim, düzen veya sorumluluk gibi beceriler arasında bağ kurması beklenir.',_type:'personal',_profileTopic:'education'});
+  }
+  if(p.publicService==='yes'){
+    arr.push({q:'Daha önce kamu görevinde bulunduğunuzu belirttiniz. Önceki görevinizden zabıt kâtipliğine geçmek istemenizin sebebi nedir?',a:'Kamu deneyimini yeni görev tercihiyle tutarlı biçimde ilişkilendirmesi beklenir.',_type:'personal',_profileTopic:'public'});
+    arr.push({q:'Önceki kamu görevinizden öğrendiğiniz ve burada özellikle uygulayacağınız bir çalışma disiplini nedir?',a:'Kamu deneyiminden somut ve göreve aktarılabilir bir davranış örneği vermesi beklenir.',_type:'personal',_profileTopic:'public'});
+  }
+  if(p.experience && !/^yok|hayır$/i.test(p.experience)){
+    arr.push({q:'Önceki iş deneyiminizin zabıt kâtipliği görevine ne gibi katkıları olacağını düşünüyorsunuz?',a:'Önceki deneyiminden göreve aktarılabilir somut beceriler göstermesi beklenir.',_type:'personal',_profileTopic:'experience'});
+    arr.push({q:'Önceki işinizde yoğunluk, hata riski veya zaman baskısı yaşadığınız bir durumu ve nasıl yönettiğinizi anlatır mısınız?',a:'Somut bir durum, kendi davranışı ve sonucu üzerinden düzenli bir örnek vermesi beklenir.',_type:'competency',_profileTopic:'experience',_criteria:[['yoğun','yogun','baskı','baski'],['plan','öncelik','oncelik'],['kontrol','hata'],['sonuç','sonuc']]});
+  }
+  if(p.reason){
+    arr.push({q:'Zabıt kâtipliğini tercih etme nedeninizi biraz daha somutlaştırır mısınız? Bu görevde sizi uzun vadede motive edecek unsur nedir?',a:'Genel ifadeler yerine göreve özgü, gerçekçi ve tutarlı bir gerekçe sunması beklenir.',_type:'personal',_profileTopic:'motivation'});
+    arr.push({q:'Kamu güvencesi ve düzenli gelir unsurlarını bir kenara bırakırsak, neden özellikle zabıt kâtipliği?',a:'Mesleğin içeriği, sorumlulukları ve adayın becerileri arasında somut bağ kurması beklenir.',_type:'personal',_profileTopic:'motivation'});
+  }
+  return arr;
+}
+
+/* ---------------- Kendini tanıtma / ifade analizi ---------------- */
+const FILLERS=['eee','ııı','şey','yani','hani','işte','falan','filan','açıkçası'];
+const UNKNOWN_PATTERNS=[/\bbilmiyorum\b/,/\bhatırlamıyorum\b/,/\bhatirlamiyorum\b/,/\bhatırlayamadım\b/,/\bhatirlayamadim\b/,/\bemin değilim\b/,/\bemin degilim\b/,/\baklıma gelmiyor\b/,/\baklima gelmiyor\b/];
+function isControlledUnknown(text){ const n=normalize(text); return UNKNOWN_PATTERNS.some(r=>r.test(n)); }
+function wordsOf(text){ return normalize(text).split(/\s+/).filter(Boolean); }
+function repeatedMeaningfulWords(text){
+  const ws=tokenize(text); const m={}; ws.forEach(w=>m[w]=(m[w]||0)+1);
+  return Object.entries(m).filter(([,c])=>c>=3).sort((a,b)=>b[1]-a[1]);
+}
+function countFillers(text){ const n=' '+normalize(text)+' '; return FILLERS.reduce((sum,f)=>sum+(n.split(' '+f+' ').length-1),0); }
+function styleMetrics(text,item,elapsedSec,voiceUsed){
+  const ws=wordsOf(text); const wc=ws.length; const uniq=new Set(ws).size; const diversity=wc?uniq/wc:0;
+  const fillers=countFillers(text); const repeats=repeatedMeaningfulWords(text); const repeatPenalty=repeats.reduce((s,[,c])=>s+Math.max(0,c-2),0);
+  let min=3,max=65;
+  if(item._type==='intro'){min=35;max=125;} else if(item._type==='personal'||item._type==='competency'){min=15;max=90;} else if(tokenize(item.a).length<=3){min=1;max=24;}
+  let brevity=100;
+  if(wc<min) brevity-=Math.min(45,(min-wc)*2); if(wc>max) brevity-=Math.min(55,(wc-max)*1.3);
+  let clarity=94-fillers*7-repeatPenalty*4; if(wc>max) clarity-=12; if(wc<Math.max(2,min/2)) clarity-=15;
+  let expression=62+Math.min(25,diversity*30)-fillers*4-repeatPenalty*2; if(wc>=min&&wc<=max) expression+=8;
+  let fluency=82-fillers*6-repeatPenalty*3;
+  if(voiceUsed && elapsedSec>2 && wc>2){
+    const wpm=wc/(elapsedSec/60); const tempoPenalty=wpm<70?Math.min(30,(70-wpm)*.45):(wpm>190?Math.min(30,(wpm-190)*.35):0);
+    fluency=95-tempoPenalty-fillers*6-repeatPenalty*3;
+  }
+  return {wordCount:wc,fillers,repeats,diversity,brevity:clamp(brevity),clarity:clamp(clarity),expression:clamp(expression),fluency:clamp(fluency)};
+}
+function includesProfileConcept(text,val){
+  if(!val) return false; const target=tokenize(val).filter(w=>w.length>3); const n=normalize(text); return target.some(w=>n.includes(w));
+}
+function buildStrongIntroExample(p){
+  const parts=[];
+  if(p.education||p.education2) parts.push('Eğitimimi '+[p.education,p.education2].filter(Boolean).join(' ve ')+' alanında tamamladım.');
+  if(p.experience && !/^yok|hayır$/i.test(p.experience)) parts.push('İş hayatında edindiğim deneyimin düzenli çalışma, sorumluluk ve iletişim yönlerimi geliştirdiğini düşünüyorum.');
+  if(p.reason) parts.push('Zabıt kâtipliğini '+p.reason.replace(/[.!?]+$/,'')+' nedeniyle bilinçli olarak tercih ediyorum.');
+  else parts.push('Zabıt kâtipliğini dikkat, düzen, sorumluluk ve kamu hizmeti bilinci gerektiren yapısı nedeniyle bilinçli olarak tercih ediyorum.');
+  parts.push('Mesleğin gereklerini öğrenmeye, kendimi geliştirmeye ve görevimi uzun vadeli şekilde özenle yürütmeye hazırım.');
+  return parts.join(' ');
+}
+function analyzeIntro(text,metrics){
+  const n=normalize(text); const notes=[];
+  const edu=/üniversite|lise|önlisans|onlisans|lisans|bölüm|bolum|mezun/.test(n)||includesProfileConcept(text,profile.education)||includesProfileConcept(text,profile.education2);
+  const exp=/çalış|calis|deneyim|tecrübe|tecrube|görev|gorev|iş hayat|is hayat/.test(n)||includesProfileConcept(text,profile.experience);
+  const role=/zabıt|zabit|kâtip|katip|adliye|adalet|klavye|kamu hizmet/.test(n);
+  const personal=(n.match(/\b\d{2}\s*yaş|benim adım|benim adim|ismim|evliyim|bekarım|bekarim|çocuğum|cocugum|annem|babam|kardeşim|kardesim/g)||[]).length;
+  const stock=(n.match(/küçüklüğümden beri|kucuklugumden beri|hayalim|kendimi geliştirmek|kendimi gelistirmek|çalışkan|caliskan|sorumluluk sahibi/g)||[]).length;
+  const repeatRisk=metrics.repeats.length>1||metrics.repeats.some(([,c])=>c>=4);
+  let s=0;
+  s+=edu?28:8; s+=(exp||!profile.experience||/^yok|hayır$/i.test(profile.experience))?18:7; s+=role?27:7;
+  s+=metrics.clarity*.12+metrics.brevity*.10+metrics.expression*.05;
+  s-=Math.max(0,personal-1)*6; if(stock>=3||repeatRisk) s-=8;
+  if(edu) notes.push('Eğitim bilgisi yeterli biçimde yer alıyor.'); else notes.push('Eğitim bilgini bir cümleyle belirtmen tanıtımı güçlendirir.');
+  if(exp) notes.push('Mesleki/iş deneyimine değinmişsin.'); else if(profile.experience && !/^yok|hayır$/i.test(profile.experience)) notes.push('İş deneyimini göreve katkısıyla birlikte kısaca belirtmen faydalı olur.');
+  if(role) notes.push('Tanıtımını zabıt kâtipliği veya kamu göreviyle ilişkilendirmişsin.'); else notes.push('Tanıtımın sonunda neden zabıt kâtipliğiyle uyumlu olduğunu bağlaman gerekir.');
+  if(metrics.wordCount>125) notes.push('Cevap gereğinden uzun; ana noktaları 60–90 saniyeye sığdırmaya çalış.'); else if(metrics.wordCount<30) notes.push('Cevap oldukça kısa; eğitim, deneyim ve meslek motivasyonunu biraz daha tamamlayabilirsin.'); else notes.push('Cevap uzunluğu genel olarak kontrollü.');
+  if(personal>1) notes.push('Yaş/aile gibi kişisel ayrıntılar tanıtımın önemli bölümünü kaplıyor; mesleki bilgiyi öne al.');
+  if(stock>=3||repeatRisk) notes.push('Metinde kalıp veya tekrarlı ifade yoğunluğu var; daha doğal ve somut cümleler kullanman daha güçlü görünür.'); else notes.push('Belirgin bir kalıp/tekrar yoğunluğu tespit edilmedi.');
+  if(metrics.repeats.length) notes.push('Sık tekrarlanan kelimeler: '+metrics.repeats.slice(0,3).map(([w,c])=>w+' ('+c+')').join(', ')+'.');
+  return {score:clamp(s),notes,strongExample:buildStrongIntroExample(profile),personalDetailCount:personal,stockRisk:stock>=3||repeatRisk};
+}
+function personalAnswerScore(text,metrics,item){
+  const n=normalize(text); let s=metrics.clarity*.32+metrics.expression*.28+metrics.brevity*.20;
+  if(/zabıt|zabit|katip|kâtip|görev|gorev|sorumluluk|uzun vad|kamu|adalet|adliye/.test(n)) s+=12;
+  if(/çünkü|cunku|nedeni|sebebi|bu yüzden|bu yuzden|katkı|katki/.test(n)) s+=8;
+  if(metrics.wordCount<8) s-=18;
+  return clamp(s);
+}
+function criterionHit(text,group){ const n=normalize(text); return group.some(k=>n.includes(normalize(k))); }
+function competencyAnswerScore(text,metrics,item){
+  const criteria=item._criteria||[]; const hits=criteria.filter(g=>criterionHit(text,g)).length;
+  let s=metrics.clarity*.25+metrics.expression*.20+metrics.brevity*.12+metrics.fluency*.08;
+  if(criteria.length) s+=(hits/criteria.length)*35; else s+=20;
+  if(metrics.wordCount<12) s-=12;
+  return clamp(s);
+}
+
+function evaluateItemAnswer(item,text,metrics){
+  if(isControlledUnknown(text)) return {result:'wrong',score:0,controlledUnknown:true};
+  if(item._type==='intro'){
+    const a=analyzeIntro(text,metrics); introAnalysis=a; return {result:a.score>=75?'correct':(a.score>=55?'close':'wrong'),score:a.score,intro:a};
+  }
+  if(item._type==='personal'){
+    const ps=personalAnswerScore(text,metrics,item); return {result:ps>=75?'correct':(ps>=55?'close':'wrong'),score:ps};
+  }
+  if(item._type==='competency'){
+    const cs=competencyAnswerScore(text,metrics,item); return {result:cs>=75?'correct':(cs>=55?'close':'wrong'),score:cs};
+  }
+  const r=evaluate(text,item.a); return {result:r,score:r==='correct'?100:(r==='close'?60:0)};
+}
+
+/* ---------------- Mod / süre ---------------- */
+function updateQuestionModeUI(){
+  const qm=selectedRadioValue('questionMode','personalized');
+  const disabled=qm==='knowledge_only';
+  profilePanel.classList.toggle('profile-disabled',disabled);
+  Object.values(profileEls).forEach(el=>{el.disabled=disabled;});
+  document.getElementById('clearProfileBtn').disabled=disabled;
+}
+function updateModeNote(){
+  const mode=selectedRadioValue('interviewMode','study');
+  const qm=selectedRadioValue('questionMode','personalized');
+  if(qm==='knowledge_only'){
+    modeNote.textContent=mode==='real'
+      ? 'Sadece Bilgi Soruları: Gerçek Mülakat 10 sorudan oluşur. Kişiye özel profil, kendini tanıtma, son cevaptan takip, komisyon hafızası ve yetkinlik/senaryo kaynakları tamamen kapalıdır; sorular yalnızca Bilgi Soru Bankasından gelir. Anlık doğru/yanlış gizlenir.'
+      : 'Sadece Bilgi Soruları: Çalışma Modunda yalnızca Bilgi Soru Bankası kullanılır. Kişiye özel ve dinamik soru kaynakları kapalıdır; anlık geri bildirim ve ara değerlendirmeler açıktır.';
+  } else {
+    modeNote.textContent=mode==='real'
+      ? 'Kişiye Özel Mülakat: 10 soruluk dinamik akış. Soru motoru Aday Profili, Kendini Tanıtma, Son Cevap, Komisyon Hafızası, Zabıt Kâtipliği Yetkinlikleri ve Bilgi Soru Bankası olmak üzere 6 kaynağı birlikte kullanır. Anlık doğru/yanlış gizlenir.'
+      : 'Kişiye Özel Çalışma Modu: önce 6 kaynaklı dinamik mülakat bölümü, ardından bilgi soru bankası. Anlık geri bildirim ve ara değerlendirmeler açıktır.';
+  }
+  updateQuestionModeUI();
+}
+modeRadios.forEach(r=>r.addEventListener('change',updateModeNote));
+commissionRadios.forEach(r=>r.addEventListener('change',updateModeNote));
+questionModeRadios.forEach(r=>r.addEventListener('change',updateModeNote));
+updateModeNote();
+
+function getQuestionTime(item){ if(item._type==='intro')return 90; if(item._type==='personal'||item._type==='competency')return 75; return tokenize(item.a).length<=3?30:60; }
+function scoreOutOf100(){ const answered=counts.correct+counts.close+counts.wrong; return answered?Math.round((score/answered)*100):0; }
+
+/* ---------------- 6 kaynaklı dinamik soru motoru ---------------- */
+function questionKey(q){ return normalize(q||'').replace(/\s+/g,' ').trim(); }
+function wasAsked(q){ return askedQuestionKeys.has(questionKey(q)); }
+function registerAsked(item){ if(item&&item.q)askedQuestionKeys.add(questionKey(item.q)); }
+function sourceLabel(src){ return ENGINE_SOURCE_LABELS[src]||'Dinamik Soru'; }
+function withEngineMeta(item,src,extra={}){
+  if(!item)return null;
+  const prefixes={profile:'Komisyon Başkanı: ',intro:'Komisyon Üyesi: ',last_answer:'Diğer Komisyon Üyesi: ',memory:'Komisyon Başkanı: ',competency:'Komisyon Üyesi: ',knowledge:'Diğer Komisyon Üyesi: '};
+  return {...item,...extra,_engineSource:src,_displayPrefix:item._displayPrefix||prefixes[src]||''};
+}
+function pickUnasked(items){ const pool=items.filter(x=>x&&x.q&&!wasAsked(x.q)); return pool.length?pool[Math.floor(Math.random()*pool.length)]:null; }
+function inferTopic(text){
+  const n=normalize(text||'');
+  if(/eş|es |nişan|nisan|tayin|aile/.test(n))return 'spouse';
+  if(/şehir|sehir|adliye|yerleş|yerles|görev yeri|gorev yeri/.test(n))return 'location';
+  if(/mezun|üniversite|universite|bölüm|bolum|lisans|önlisans|onlisans|eğitim|egitim/.test(n))return 'education';
+  if(/çalış|calis|deneyim|tecrübe|tecrube|iş hayat|is hayat/.test(n))return 'experience';
+  if(/neden.*zab|tercih|motiv|kamu güv|kamu guv|meslek|hedef/.test(n))return 'motivation';
+  if(/gizli|mahrem|tarafsız|tarafsiz|yetki/.test(n))return 'ethics';
+  if(/hata|dikkat|doğru|dogru|kontrol/.test(n))return 'accuracy';
+  return 'general';
+}
+function profileSourceQuestion(){
+  const q=pickUnasked(profileQuestionCandidates(profile));
+  return q?withEngineMeta(q,'profile') : null;
+}
+function introSourceQuestion(){
+  const log=answerLog.find(x=>x.type==='intro'); if(!log||!log.text)return null;
+  const n=normalize(log.text), c=[];
+  if(/mezun|üniversite|universite|bölüm|bolum|lisans|önlisans|onlisans/.test(n)||includesProfileConcept(log.text,profile.education)||includesProfileConcept(log.text,profile.education2))
+    c.push({q:'Kendinizi tanıtırken eğitim geçmişinizden söz ettiniz. Bu eğitimin zabıt kâtipliği görevinde size sağlayacağı en somut katkı nedir?',a:'Eğitim geçmişinden görevin dikkat, iletişim, düzen veya sorumluluk boyutlarına somut bir bağ kurması beklenir.',_type:'personal',_profileTopic:'education'});
+  if(/çalış|calis|deneyim|tecrübe|tecrube|iş hayat|is hayat/.test(n))
+    c.push({q:'Kendinizi tanıtırken iş deneyiminize değindiniz. Bu deneyiminizden zabıt kâtipliğine doğrudan aktarabileceğiniz bir çalışma alışkanlığı nedir?',a:'Önceki deneyimden göreve aktarılabilir somut bir beceri veya alışkanlık açıklaması beklenir.',_type:'personal',_profileTopic:'experience'});
+  if(/zabıt|zabit|kâtip|katip|kamu|adalet|adliye|meslek/.test(n))
+    c.push({q:'Kendinizi tanıtırken zabıt kâtipliği tercihine değindiniz. Neden başka bir kamu görevi değil de özellikle bu meslek?',a:'Mesleğin görevleri ile kendi beceri ve motivasyonu arasında somut bağ kurması beklenir.',_type:'personal',_profileTopic:'motivation'});
+  if(/ailem|eşim|esim|nişanlı|nisanli|evliyim|çocuğ|cocug/.test(n))
+    c.push({q:'Kendinizi tanıtırken ailevi durumunuza da değindiniz. Görev yeri veya çalışma düzeni aile planınızla çelişirse önceliklerinizi nasıl yönetirsiniz?',a:'Ailevi koşulları gerçekçi biçimde değerlendirirken kamu görevinin sorumluluklarını koruyan bir yaklaşım beklenir.',_type:'personal',_profileTopic:'spouse'});
+  c.push({q:'Kendinizi tanıtırken anlattıklarınız içinde sizi iyi bir zabıt kâtibi yapacağını düşündüğünüz en güçlü özelliğiniz hangisidir? Bunu somut bir örnekle açıklar mısınız?',a:'Genel sıfatlar yerine göreve uygun bir güçlü yönü somut örnekle desteklemesi beklenir.',_type:'competency',_profileTopic:'strength',_criteria:[['dikkat','sorumluluk','düzen','duzen','iletişim','iletisim','hız','hiz'],['örnek','ornek','durum'],['sonuç','sonuc','katkı','katki']]});
+  const q=pickUnasked(c); return q?withEngineMeta(q,'intro'):null;
+}
+function lastAnswerSourceQuestion(){
+  const log=[...answerLog].reverse().find(x=>x.text&&x.text.trim()); if(!log)return null;
+  const topic=log.profileTopic||inferTopic(log.text+' '+log.q), n=normalize(log.text), c=[];
+  if(topic==='education') c.push({q:'Az önce eğitim geçmişinizden söz ettiniz. Kendi alanınızda daha iyi bir fırsat çıkarsa zabıt kâtipliğinde kalma kararınızı ne belirler?',a:'Meslek tercihinin geçici olmadığını, görevin sorumluluklarını ve uzun vadeli motivasyonunu tutarlı biçimde açıklaması beklenir.',_type:'personal',_profileTopic:'education'});
+  if(topic==='spouse'||/tayin|eşim|esim|nişanlı|nisanli/.test(n)) c.push({q:'Az önce aile veya tayin konusuna değindiniz. Eşinizin görev yeri değiştiğinde sizin için ilk ölçüt ne olur?',a:'Kendi görev yükümlülüğünü, mevzuat ve aile koşullarını gerçekçi biçimde birlikte değerlendirmesi beklenir.',_type:'personal',_profileTopic:'spouse'});
+  if(topic==='location') c.push({q:'Az önce görev yeri tercihinizden bahsettiniz. Beklediğinizden daha zor şartlarla karşılaşırsanız burada devam etme motivasyonunuzu nasıl korursunuz?',a:'Tercihin sonuçlarını öngören, çözüm ve görev sorumluluğu odaklı yaklaşım beklenir.',_type:'personal',_profileTopic:'location'});
+  if(topic==='experience') c.push({q:'Az önce önceki deneyiminizin size katkı sağlayacağını söylediniz. Bu katkıyı gösteren tek bir somut olay anlatır mısınız?',a:'Durum, kendi davranışı ve sonuç içeren somut bir örnek vermesi beklenir.',_type:'competency',_profileTopic:'experience',_criteria:[['durum','örnek','ornek'],['yaptım','yaptig','çöz','coz','davran'],['sonuç','sonuc']]});
+  if(topic==='motivation') c.push({q:'Az önce zabıt kâtipliğini neden istediğinizi açıkladınız. Bu mesleğin sizi en çok zorlayacağını düşündüğünüz yönü nedir?',a:'Mesleğin gerçek güçlüklerini tanıyan ve bunlarla başa çıkma planı sunan dengeli bir cevap beklenir.',_type:'personal',_profileTopic:'motivation'});
+  if(/dikkat|hata|doğru|dogru|kontrol/.test(n)) c.push({q:'Dikkat ve doğruluğun önemli olduğunu söylediniz. Hız baskısı altında hata yaptığınızı fark ederseniz ilk olarak ne yaparsınız?',a:'Hızdan önce doğruluk ve usulü koruyan, hatayı kontrol edip gerekli kişiye bildiren yaklaşım beklenir.',_type:'competency',_profileTopic:'accuracy',_criteria:[['kontrol','hata'],['bildir','amir'],['düzelt','duzelt']]});
+  if(/iletişim|iletisim|insan|vatandaş|vatandas/.test(n)) c.push({q:'İletişim yönünüzün güçlü olduğunu belirttiniz. Öfkeli bir vatandaşla karşılaştığınızda bu gücünüzü nasıl kullanırsınız?',a:'Sakin, saygılı, tarafsız ve yetki sınırlarını koruyan iletişim yaklaşımı beklenir.',_type:'competency',_profileTopic:'communication',_criteria:[['sakin','saygı','saygi'],['tarafsız','tarafsiz'],['yetki'],['yönlendir','yonlendir']]});
+  let q=pickUnasked(c);
+  if(!q && log.type==='knowledge') q=pickRelatedKnowledge(log.text+' '+log.q,log.category);
+  return q?withEngineMeta(q,'last_answer',{_followUp:true,_sourceQuestion:log.q}):null;
+}
+function memorySourceQuestion(){
+  if(answerLog.length<3)return null;
+  const candidates=answerLog.slice(0,-1).filter(x=>x.text&&x.text.trim()); if(!candidates.length)return null;
+  const log=candidates[Math.floor(Math.random()*candidates.length)]; const topic=log.profileTopic||inferTopic(log.text+' '+log.q); let q=null;
+  const map={
+    spouse:{q:'Daha önce görev yeri ve aile/tayin konusuna değinmiştiniz. Bu konuda verdiğiniz cevabı tek bir ilkeye bağlasanız, karar verirken önceliğiniz ne olur?',a:'Önceki cevabıyla çelişmeden görev sorumluluğu, mevzuat ve aile koşullarını dengeli biçimde açıklaması beklenir.',_type:'personal',_profileTopic:'spouse'},
+    location:{q:'Daha önce görev yeri tercihiniz hakkında konuştuk. Göreve başladıktan kısa süre sonra başka bir şehirde daha rahat bir imkân doğarsa nasıl hareket edersiniz?',a:'Önceki görev yeri cevabıyla tutarlı, sorumluluk ve süreklilik odaklı bir yaklaşım beklenir.',_type:'personal',_profileTopic:'location'},
+    education:{q:'Daha önce eğitiminiz ile zabıt kâtipliği tercihinizi ilişkilendirdiniz. Bu mesleği geçici bir basamak olarak görmediğinizi komisyona nasıl açıklarsınız?',a:'Önceki eğitim ve kariyer cevabıyla tutarlı, uzun vadeli meslek motivasyonu beklenir.',_type:'personal',_profileTopic:'education'},
+    experience:{q:'Önceki iş deneyiminizden bahsettiniz. Göreve başladığınız ilk ay bu deneyiminizden özellikle hangi alışkanlığı kullanırsınız?',a:'Önceki deneyim cevabıyla tutarlı ve somut bir aktarım örneği beklenir.',_type:'personal',_profileTopic:'experience'},
+    motivation:{q:'Daha önce mesleği neden istediğinizi açıkladınız. Kamu güvencesi ve maaş unsurlarını tamamen çıkarırsak geriye hangi mesleki gerekçeniz kalır?',a:'Önceki motivasyonuyla tutarlı, görevin içeriğine özgü bir gerekçe sunması beklenir.',_type:'personal',_profileTopic:'motivation'}
+  };
+  q=map[topic]||null;
+  if(!q && log.type==='knowledge')q=pickRelatedKnowledge(log.text+' '+log.q,log.category);
+  if(!q)q={q:'Mülakatın önceki bölümünde verdiğiniz cevaplardan birini düşünün. O cevabınızın zabıt kâtipliği görevine uygunluğunuzu gösteren en önemli yönü nedir?',a:'Önceki cevaplarıyla bağlantı kuran, tutarlı ve somut bir değerlendirme beklenir.',_type:'personal',_profileTopic:'memory'};
+  return !wasAsked(q.q)?withEngineMeta(q,'memory',{_followUp:true,_memoryCheck:true,_sourceQuestion:log.q}):null;
+}
+function competencySourceQuestion(){ const q=pickUnasked(COMPETENCY_BANK); return q?withEngineMeta({...q,_type:'competency'},'competency'):null; }
+function knowledgeBalanceCategory(){
+  const cats=Object.keys(CATEGORY_LABELS); return cats.sort((a,b)=>(catStats[a].total||0)-(catStats[b].total||0))[0];
+}
+function pickRelatedKnowledge(contextText,preferredCategory){
+  const ctx=new Set(tokenize(contextText||'')); const pool=QUESTIONS.filter(q=>!wasAsked(q.q)); if(!pool.length)return null;
+  const ranked=pool.map(q=>{const toks=new Set(tokenize(q.q+' '+q.a));let sc=0;ctx.forEach(t=>{if(toks.has(t))sc+=3;else if([...toks].some(c=>c.includes(t)||t.includes(c)))sc+=1;});if(preferredCategory&&categorizeQuestion(q)===preferredCategory)sc+=2;return{q,sc};}).sort((a,b)=>b.sc-a.sc);
+  if(ranked[0]&&ranked[0].sc>1)return {...ranked[0].q};
+  const cat=preferredCategory||knowledgeBalanceCategory(); const same=pool.filter(q=>categorizeQuestion(q)===cat); return {...(same.length?same[Math.floor(Math.random()*same.length)]:pool[Math.floor(Math.random()*pool.length)])};
+}
+function knowledgeSourceQuestion(){
+  const last=[...answerLog].reverse().find(x=>x.text&&x.text.trim()); const q=pickRelatedKnowledge(last?(last.text+' '+last.q):'',null); return q?withEngineMeta(q,'knowledge'):null;
+}
+function sourceCandidate(src){
+  if(src==='profile')return profileSourceQuestion(); if(src==='intro')return introSourceQuestion(); if(src==='last_answer')return lastAnswerSourceQuestion();
+  if(src==='memory')return memorySourceQuestion(); if(src==='competency')return competencySourceQuestion(); return knowledgeSourceQuestion();
+}
+function resolveEngineSlot(slot){
+  const preferred=slot._preferredSource; const all=['profile','intro','last_answer','memory','competency','knowledge'];
+  const rest=all.filter(x=>x!==preferred).sort((a,b)=>(sourceUsage[a]||0)-(sourceUsage[b]||0));
+  for(const src of [preferred,...rest]){ const item=sourceCandidate(src); if(item){sourceUsage[src]=(sourceUsage[src]||0)+1;if(src==='last_answer'||src==='memory')followUpCount++;return item;} }
+  const q=pickRelatedKnowledge('',null); if(q){sourceUsage.knowledge++;return withEngineMeta(q,'knowledge');}
+  return {q:'Zabıt kâtipliği görevinde en önemli gördüğünüz üç özelliği ve nedenlerini açıklayınız.',a:'Dikkat, doğruluk, sorumluluk, gizlilik, tarafsızlık ve iletişim gibi göreve uygun özellikleri gerekçeli biçimde açıklaması beklenir.',_type:'personal',_engineSource:'competency'};
+}
+function ensureUniqueKnowledgeItem(item){
+  if(!item||item._type||!wasAsked(item.q))return item;
+  const q=pickRelatedKnowledge('',categorizeQuestion(item)); return q||item;
+}
+function preparePossibleFollowUp(item,userText,result){ pendingFollowUp=null; if(!item._followUp)baseAnsweredCount++; if(questionMode==='knowledge_only')return; }
+function engineSourceSummary(){
+  if(questionMode==='knowledge_only')return 'Bilgi Soru Bankası: '+answerLog.filter(x=>x.type==='knowledge').length;
+  return Object.keys(ENGINE_SOURCE_LABELS).filter(k=>sourceUsage[k]).map(k=>ENGINE_SOURCE_LABELS[k]+': '+sourceUsage[k]).join(' · ');
+}
+
+/* ---------------- Komisyon tepkileri ---------------- */
+function commissionReaction(){ const r={normal:['Cevabınız kaydedildi.','Komisyon: Peki, teşekkür ederim.'],challenging:['Komisyon cevabınızı not aldı.','Komisyon: Peki. Devam edelim.','Komisyon üyeleri kısa bir not aldı.'],realistic:['Komisyon: Peki.','Komisyon: Teşekkür ederim.','Komisyon üyeleri herhangi bir yorum yapmadan not aldı.']}; const a=r[commissionLevel]||r.normal; return a[Math.floor(Math.random()*a.length)]; }
+function showRealInterviewFeedback(){ feedbackBox.className='feedback show neutral'; fbKey.textContent='•'; fbTitle.textContent=commissionReaction(); fbAnswer.textContent='Mülakat devam ediyor. Puanlama ve ayrıntılı değerlendirme oturum sonunda gösterilecek.'; nextBtn.classList.add('show'); answerInput.disabled=true; submitBtn.disabled=true; }
+function showFeedback(result,item){
+  const map={correct:{cls:'correct',key:'✓',title:'Tebrikler, güçlü cevap!'},close:{cls:'close',key:'~',title:'Cevap kabul edilebilir ancak geliştirilebilir.'},wrong:{cls:'wrong',key:'✕',title:'Cevabını tekrar gözden geçir.'}}; const m=map[result]; feedbackBox.className='feedback show '+m.cls; fbKey.textContent=m.key; fbTitle.textContent=m.title;
+  fbAnswer.innerHTML=(item._type==='personal'||item._type==='competency')?'<b>Değerlendirme ölçütü:</b> '+item.a:'<b>Beklenen cevap:</b> '+item.a; nextBtn.classList.add('show'); answerInput.disabled=true; submitBtn.disabled=true;
+}
+function showIntroFeedback(a){ feedbackBox.className='feedback show '+(a.score>=75?'correct':(a.score>=55?'close':'wrong')); fbKey.textContent=a.score>=75?'✓':'~'; fbTitle.textContent='Kendini tanıtma puanın: '+a.score+'/100'; fbAnswer.innerHTML='<b>Öne çıkan değerlendirme:</b> '+a.notes.slice(0,3).join(' ')+'<br><br><b>Daha güçlü ifade edebilirdin:</b> '+a.strongExample; nextBtn.classList.add('show'); answerInput.disabled=true; submitBtn.disabled=true; }
+function showUnknownFeedback(item){ feedbackBox.className='feedback show unknown'; fbKey.textContent='✓'; fbTitle.textContent='Kontrollü “bilmiyorum” kullanımı'; fbAnswer.innerHTML='Sorunun cevabını bilemedin ancak yanlış bilgi uydurmak yerine kontrollü biçimde hatırlamadığını ifade ettin. Bu, kriz yönetimi açısından olumlu bir davranıştır.<br><br><b>Doğru cevap:</b> '+item.a; nextBtn.classList.add('show'); answerInput.disabled=true; submitBtn.disabled=true; }
+
+/* ---------------- Mikrofon / konuşmayı yazıya çevirme ---------------- */
+function setupSpeech(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){ micBtn.disabled=true; micBtn.textContent='Mikrofon desteklenmiyor'; answerHint.textContent='Tarayıcın sesli yazıya dönüştürmeyi desteklemiyor; cevabını yazabilirsin.'; return; }
+  recognition=new SR(); recognition.lang='tr-TR'; recognition.continuous=true; recognition.interimResults=true;
+  // Chrome/Android, ara konuşma sonuçlarını aynı kelimeleri genişleterek tekrar tekrar
+  // gönderebilir. Önceki sürümde her final parça recognitionSeed'e yeniden eklenebildiği
+  // için "Merhaba ben Serdar" -> "Merhaba merhaba ..." gibi çoğalmalar oluşuyordu.
+  // Çözüm: Aynı dinleme oturumundaki sonuçları HER event'te baştan kur; yalnızca
+  // mikrofon açılmadan önce textarea'da bulunan metni sabit başlangıç (seed) olarak tut.
+  recognition.onresult=e=>{
+    let finalText='';
+    let interimText='';
+    for(let i=0;i<e.results.length;i++){
+      const t=(e.results[i][0].transcript||'').trim();
+      if(!t)continue;
+      if(e.results[i].isFinal) finalText+=(finalText?' ':'')+t;
+      else interimText+=(interimText?' ':'')+t;
+    }
+    answerInput.value=[recognitionSeed,finalText,interimText].filter(Boolean).join(' ').replace(/\s+/g,' ').trim();
+  };
+  recognition.onend=()=>{ recognizing=false; micBtn.classList.remove('listening'); micBtn.textContent='🎙 Sesle Cevapla'; };
+  recognition.onerror=()=>{ recognizing=false; micBtn.classList.remove('listening'); micBtn.textContent='🎙 Sesle Cevapla'; };
+  micBtn.addEventListener('click',()=>{ if(recognizing){recognition.stop();return;} voiceUsedThisQuestion=true; recognitionSeed=answerInput.value.trim(); try{recognition.start(); recognizing=true; micBtn.classList.add('listening'); micBtn.textContent='■ Dinlemeyi Durdur';}catch(e){} });
+}
+function stopSpeech(){ if(recognizing&&recognition){try{recognition.stop();}catch(e){}} recognizing=false; micBtn.classList.remove('listening'); if(!micBtn.disabled)micBtn.textContent='🎙 Sesle Cevapla'; }
+setupSpeech();
+
+/* ---------------- Oturum başlangıcı ---------------- */
+function buildKnowledgeOnlyOrder(){
+  const source=shuffleToggle.checked?shuffle(QUESTIONS):[...QUESTIONS];
+  const picked=interviewMode==='real'?source.slice(0,REAL_INTERVIEW_BASE_QUESTIONS):source;
+  return picked.map(q=>withEngineMeta({...q},'knowledge',{_knowledgeOnly:true}));
+}
+function buildSessionOrder(){
+  if(questionMode==='knowledge_only')return buildKnowledgeOnlyOrder();
+  const source=shuffleToggle.checked?shuffle(QUESTIONS):[...QUESTIONS];
+  const realSources=['profile','last_answer','knowledge','competency','intro','memory','knowledge','last_answer','competency'];
+  const studySources=['profile','intro','last_answer','competency','knowledge','memory','profile','knowledge','last_answer','competency','knowledge','memory'];
+  const slots=(interviewMode==='real'?realSources:studySources).map((src,i)=>({_type:'engine_slot',_preferredSource:src,_slot:i+1}));
+  return interviewMode==='real'?[buildSelfIntroItem(),...slots]:[buildSelfIntroItem(),...slots,...source];
+}
+function beginQuiz(){
+  stopSpeech();
+  interviewMode=selectedRadioValue('interviewMode','study');
+  commissionLevel=selectedRadioValue('commissionLevel','normal');
+  questionMode=selectedRadioValue('questionMode','personalized');
+  if(questionMode==='personalized'){saveProfile();profile=collectProfile();}else{profile={};}
+  current=0;score=0;counts={correct:0,close:0,wrong:0};missedQuestions=[];resetCatStats();followUpCount=0;baseAnsweredCount=0;pendingFollowUp=null;answerLog=[];controlledUnknownCount=0;introAnalysis=null;askedQuestionKeys=new Set();sourceUsage={profile:0,intro:0,last_answer:0,memory:0,competency:0,knowledge:0};
+  order=buildSessionOrder();
+  scoreLive.textContent='0';qTotal.textContent=order.length;
+  if(interviewMode==='real'){scoreSegment.style.display='none';scoreDivider.style.display='none';}else{scoreSegment.style.display='';scoreDivider.style.display='';}
+  const contentLabel=questionMode==='knowledge_only'?'Sadece Bilgi Soruları':'Kişiye Özel';
+  sessionLabel.textContent=(interviewMode==='real'?'Gerçek Mülakat':'Çalışma Modu')+' · '+contentLabel+' · '+COMMISSION_LABELS[commissionLevel]+' Komisyon';
+  startCard.classList.remove('show');startCard.style.display='none';quizCard.style.display='block';progressTrack.style.display='block';sessionControls.style.display='flex';resultCard.classList.remove('show');checkpointCard.style.display='none';renderQuestion();
+}
+startBtn.addEventListener('click',beginQuiz);
+
+/* ---------------- Soru akışı ---------------- */
+function startTimer(item){ clearInterval(timerInterval); const total=getQuestionTime(item); timeLeft=total; updateTimerDisplay(total); timerInterval=setInterval(()=>{timeLeft--;updateTimerDisplay(total);if(timeLeft<=0){clearInterval(timerInterval);handleTimeout();}},1000); }
+function updateTimerDisplay(total){ timerBadge.textContent=timeLeft+'s'; timerBadge.classList.remove('warn','danger'); const warnAt=Math.ceil(total/3),dangerAt=Math.ceil(total/6); if(timeLeft<=dangerAt)timerBadge.classList.add('danger'); else if(timeLeft<=warnAt)timerBadge.classList.add('warn'); }
+function recordResult(item,result){
+  if(!item._type){ const cat=categorizeQuestion(item); catStats[cat].total++; if(result==='correct')catStats[cat].correct++; }
+  if(result!=='correct')missedQuestions.push({q:item.q,result,itemType:item._type||'knowledge'});
+}
+function renderQuestion(){
+  answeredThisQuestion=false; voiceUsedThisQuestion=false; recognitionSeed='';
+  let item=order[current];
+  if(item&&item._type==='engine_slot'){ item=resolveEngineSlot(item); order[current]=item; }
+  item=ensureUniqueKnowledgeItem(item); order[current]=item; registerAsked(item);
+  let label='Soru '+String(current+1).padStart(2,'0');
+  if(item._type==='intro')label='Kendini Tanıt';
+  else if(interviewMode==='real'&&questionMode==='knowledge_only')label='Bilgi Sorusu';
+  else if(interviewMode==='real')label='Komisyon Sorusu';
+  else if(item._engineSource==='last_answer'||item._engineSource==='memory')label='Takip Sorusu';
+  else if(item._type==='competency')label='Yetkinlik / Senaryo';
+  else if(item._type==='personal')label='Kişisel Soru';
+  else label='Bilgi Sorusu';
+  qNo.textContent=label; qIndex.textContent=current+1; qTotal.textContent=order.length;
+  qText.textContent=(item._displayPrefix||'')+item.q; answerInput.value=''; answerInput.disabled=false; submitBtn.disabled=false; feedbackBox.className='feedback'; nextBtn.classList.remove('show');
+  answerInput.placeholder=item._type==='intro'?'60–90 saniyelik, kısa ve profesyonel bir tanıtım yap…':'Cevabını buraya yaz veya mikrofonla söyle…';
+  if(interviewMode==='study'&&item._engineSource) answerHint.textContent='Soru kaynağı: '+sourceLabel(item._engineSource)+' · Cevabını yazabilir veya mikrofonla söyleyebilirsin.';
+  else answerHint.textContent=micBtn.disabled?'Cevabını yazabilirsin.':'Cevabını yazabilir veya mikrofonla söyleyebilirsin.';
+  progressFill.style.width=((current)/order.length*100+1)+'%'; questionStartedAt=Date.now(); startTimer(item); setTimeout(()=>answerInput.focus(),50);
+}
+
+function applyAnswer(text,opts={}){
+  if(answeredThisQuestion)return; answeredThisQuestion=true; clearInterval(timerInterval); stopSpeech(); const item=order[current]; const elapsed=Math.max(1,(Date.now()-questionStartedAt)/1000); const metrics=styleMetrics(text,item,elapsed,voiceUsedThisQuestion);
+  let ev;
+  if(opts.skipped||!text.trim()) ev={result:'wrong',score:0,controlledUnknown:false}; else ev=evaluateItemAnswer(item,text,metrics);
+  counts[ev.result]++; if(ev.result==='correct')score+=1; else if(ev.result==='close')score+=.5; if(ev.controlledUnknown)controlledUnknownCount++;
+  recordResult(item,ev.result); answerLog.push({q:item.q,type:item._type||'knowledge',followUp:!!item._followUp||item._engineSource==='last_answer'||item._engineSource==='memory',engineSource:item._engineSource||null,profileTopic:item._profileTopic||inferTopic(text+' '+item.q),result:ev.result,score:ev.score,text,elapsed,voiceUsed:voiceUsedThisQuestion,controlledUnknown:!!ev.controlledUnknown,metrics,category:item._type?null:categorizeQuestion(item)});
+  if(!opts.skipped)preparePossibleFollowUp(item,text,ev.result); else {pendingFollowUp=null;if(!item._followUp)baseAnsweredCount++;}
+  scoreLive.textContent=scoreOutOf100();
+  if(interviewMode==='real'){ showRealInterviewFeedback(); if(opts.timeout&&!text.trim())fbTitle.textContent='Süre doldu — cevap kaydedilemedi.'; else if(opts.skipped)fbTitle.textContent='Soru geçildi — komisyon devam ediyor.'; }
+  else if(ev.controlledUnknown&&!item._type) showUnknownFeedback(item);
+  else if(item._type==='intro'&&ev.intro) showIntroFeedback(ev.intro);
+  else { showFeedback(ev.result,item); if(opts.timeout&&!text.trim())fbTitle.textContent='Süre doldu — cevap veremedin.'; if(opts.skipped)fbTitle.textContent='Soru geçildi — cevabı incele.'; }
+}
+function submitAnswer(){ const val=answerInput.value.trim(); if(!val){answerInput.focus();return;} applyAnswer(val); }
+function handleTimeout(){ applyAnswer(answerInput.value.trim(),{timeout:true}); }
+submitBtn.addEventListener('click',submitAnswer);
+answerInput.addEventListener('keydown',e=>{ if(e.key==='Enter'&&(e.ctrlKey||e.metaKey)){e.preventDefault(); if(answeredThisQuestion)nextBtn.click(); else submitAnswer();} });
+skipBtn.addEventListener('click',()=>applyAnswer('',{skipped:true}));
+nextBtn.addEventListener('click',()=>{
+  pendingFollowUp=null;
+  current++; if(current>=order.length)finishQuiz(); else if(interviewMode==='study'&&current>2&&current%CHECKPOINT_EVERY===0)showCheckpoint(); else renderQuestion();
+});
+
+/* ---------------- Ara / tekrar ---------------- */
+function renderReviewList(listEl){ listEl.innerHTML=''; const review=missedQuestions.filter(m=>m.itemType==='knowledge'); if(!review.length){const li=document.createElement('li');li.className='review-empty';li.style.border='none';li.style.background='none';li.style.padding='4px 0';li.textContent='Bilgi sorularında tekrar listesine düşen soru yok.';listEl.appendChild(li);return;} review.forEach(m=>{const li=document.createElement('li');li.className=m.result;const tag=document.createElement('span');tag.className='tag';tag.textContent=m.result==='wrong'?'Yanlış':'Yakın';const span=document.createElement('span');span.textContent=m.q;li.appendChild(tag);li.appendChild(span);listEl.appendChild(li);}); }
+function showCheckpoint(){ quizCard.style.display='none';progressTrack.style.display='none';const s100=scoreOutOf100();checkpointScore.textContent=s100+' / 100';ckCorrect.textContent=counts.correct;ckClose.textContent=counts.close;ckWrong.textContent=counts.wrong;checkpointSub.textContent=s100>=85?'Harika gidiyorsun — bu tempoyla devam et!':(s100>=60?'İyi gidiyorsun, birkaç konuyu tekrar etmekte fayda var.':'Bu bölümdeki konuları tekrar gözden geçirmen faydalı olur.');renderReviewList(document.getElementById('checkpointReviewList'));checkpointCard.style.display='block'; }
+checkpointContinueBtn.addEventListener('click',()=>{checkpointCard.style.display='none';quizCard.style.display='block';progressTrack.style.display='block';renderQuestion();});
+function renderCatBreakdown(){ const el=document.getElementById('catBreakdown');el.innerHTML='';Object.keys(CATEGORY_LABELS).forEach(cat=>{const stat=catStats[cat];if(!stat||!stat.total)return;const pct=Math.round(stat.correct/stat.total*100);const row=document.createElement('div');row.className='cat-row';row.innerHTML='<div class="cat-row-head"><span class="cat-name">'+CATEGORY_LABELS[cat]+'</span><span class="cat-pct">%'+pct+' ('+stat.correct+'/'+stat.total+')</span></div><div class="cat-bar-track"><div class="cat-bar-fill" style="width:'+pct+'%"></div></div>';el.appendChild(row);}); }
+
+/* ---------------- Ayrıntılı karne ---------------- */
+function knowledgeScore(){ const a=answerLog.filter(x=>x.type==='knowledge'); return a.length?clamp(average(a.map(x=>resultPoints(x.result)*100),0)):0; }
+function metricAverage(key){ return clamp(average(answerLog.filter(x=>x.text&&x.text.trim()).map(x=>x.metrics[key]),70)); }
+function pressureScore(){ const f=answerLog.filter(x=>x.followUp); let base=f.length?average(f.map(x=>resultPoints(x.result)*100),0):70; if(controlledUnknownCount)base+=Math.min(12,controlledUnknownCount*4); return clamp(base); }
+function computeRubric(){
+  const r={knowledge:knowledgeScore(),expression:metricAverage('expression'),clarity:metricAverage('clarity'),fluency:metricAverage('fluency'),brevity:metricAverage('brevity'),pressure:pressureScore(),intro:introAnalysis?introAnalysis.score:60};
+  if(questionMode==='knowledge_only'){
+    r.pressure=null;r.intro=null;
+    r.overall=clamp(r.knowledge*.70+r.expression*.10+r.clarity*.08+r.fluency*.06+r.brevity*.06);
+  }else{
+    r.overall=clamp(r.knowledge*.35+r.expression*.15+r.clarity*.12+r.fluency*.10+r.brevity*.08+r.pressure*.10+r.intro*.10);
+  }
+  return r;
+}
+function renderRubric(r){
+  const keys=Object.keys(RUBRIC_LABELS).filter(k=>r[k]!=null);
+  const grid=document.getElementById('rubricGrid');grid.innerHTML='';keys.forEach(k=>{const d=document.createElement('div');d.className='rubric-card';d.innerHTML='<div class="label">'+RUBRIC_LABELS[k]+'</div><div class="value">'+r[k]+'</div><div class="bar"><span style="width:'+r[k]+'%"></span></div>';grid.appendChild(d);});
+  const pairs=keys.map(k=>[k,r[k]]).sort((a,b)=>b[1]-a[1]);const best=pairs[0],weak=pairs[pairs.length-1];
+  document.getElementById('strengthBox').innerHTML='<div class="strength-item"><b>En güçlü yönün</b>'+RUBRIC_LABELS[best[0]]+' · '+best[1]+'/100</div><div class="strength-item"><b>En çok geliştirmen gereken</b>'+RUBRIC_LABELS[weak[0]]+' · '+weak[1]+'/100</div>';
+}
+function renderIntroResult(){ const box=document.getElementById('introResultBox');if(!introAnalysis){box.style.display='none';return;}box.style.display='block';const ul=document.getElementById('introNotes');ul.innerHTML='';introAnalysis.notes.forEach(n=>{const li=document.createElement('li');li.textContent=n;ul.appendChild(li);});document.getElementById('strongIntroExample').innerHTML='<b>Daha güçlü ifade edebilirdin:</b><br>'+introAnalysis.strongExample; }
+function renderUnknownResult(){ const box=document.getElementById('unknownResultBox');if(!controlledUnknownCount){box.style.display='none';return;}box.style.display='block';document.getElementById('unknownSummary').textContent=controlledUnknownCount+' soruda “bilmiyorum / şu an hatırlayamadım” türü kontrollü ifade kullandın. Bilgi puanı bu sorularda düşer; ancak yanlış bilgi uydurmamak kriz yönetimi açısından olumlu kabul edildi.'; }
+
+/* ---------------- Geçmiş ve gelişim grafiği ---------------- */
+function loadHistory(){try{return JSON.parse(localStorage.getItem(HISTORY_KEY)||'[]')||[];}catch(e){return[];}}
+function saveHistoryItem(item){const h=loadHistory();h.push(item);while(h.length>30)h.shift();try{localStorage.setItem(HISTORY_KEY,JSON.stringify(h));}catch(e){}}
+function categorySnapshot(){const o={};Object.keys(CATEGORY_LABELS).forEach(k=>{const st=catStats[k];o[k]=st&&st.total?Math.round(st.correct/st.total*100):null;});return o;}
+function historyInsight(h){
+  if(!h.length)return 'Henüz kayıtlı bir mülakat yok. İlk tamamlanan oturumdan sonra gelişim grafiği burada oluşacak.';
+  const last=h[h.length-1];const last5=h.slice(-5);let bestText='';if(last5.length>=2){const first=last5[0],end=last5[last5.length-1];let best=null;Object.keys(CATEGORY_LABELS).forEach(k=>{if(first.categories&&end.categories&&first.categories[k]!=null&&end.categories[k]!=null){const d=end.categories[k]-first.categories[k];if(!best||d>best.d)best={k,d};}});if(best)bestText='Son '+last5.length+' oturumda en fazla gelişen alan: '+CATEGORY_LABELS[best.k]+' '+(best.d>=0?'+':'')+best.d+' puan. ';}
+  let weak=null;Object.keys(CATEGORY_LABELS).forEach(k=>{const v=last.categories&&last.categories[k];if(v!=null&&(!weak||v<weak.v))weak={k,v};});return bestText+(weak?'Hâlâ en çok çalışılması gereken bilgi alanı: '+CATEGORY_LABELS[weak.k]+' %'+weak.v+'. ':'')+'Son genel mülakat puanı: '+last.overall+'/100.';
+}
+function renderHistoryChart(targetId,h){
+  const el=document.getElementById(targetId);if(!el)return;if(!h.length){el.innerHTML='<div class="history-empty">Henüz kayıtlı mülakat yok.</div>';return;}const data=h.slice(-8),W=640,H=210,L=38,R=16,T=18,B=38,iw=W-L-R,ih=H-T-B;const pts=data.map((d,i)=>{const x=data.length===1?L+iw/2:L+i*iw/(data.length-1);const y=T+(100-d.overall)/100*ih;return{x,y,d};});let svg='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Mülakat gelişim grafiği">';[0,25,50,75,100].forEach(v=>{const y=T+(100-v)/100*ih;svg+='<line x1="'+L+'" y1="'+y+'" x2="'+(W-R)+'" y2="'+y+'" stroke="rgba(201,162,75,.14)"/><text x="6" y="'+(y+4)+'" fill="rgba(207,199,174,.65)" font-size="10">'+v+'</text>';});svg+='<polyline fill="none" stroke="#2e9a94" stroke-width="3" points="'+pts.map(p=>p.x+','+p.y).join(' ')+'"/>';pts.forEach((p,i)=>{const label=new Date(p.d.ts).toLocaleDateString('tr-TR',{day:'2-digit',month:'2-digit'});svg+='<circle cx="'+p.x+'" cy="'+p.y+'" r="4" fill="#e6c778"/><text x="'+p.x+'" y="'+(p.y-9)+'" text-anchor="middle" fill="#f4efe1" font-size="10">'+p.d.overall+'</text><text x="'+p.x+'" y="'+(H-12)+'" text-anchor="middle" fill="rgba(207,199,174,.65)" font-size="9">'+label+'</text>';});svg+='</svg>';el.innerHTML=svg;
+}
+function renderHistoryAll(){const h=loadHistory();renderHistoryChart('historyChartStart',h);renderHistoryChart('historyChartResult',h);const text=historyInsight(h);const a=document.getElementById('historyInsightStart'),b=document.getElementById('historyInsightResult');if(a)a.textContent=text;if(b)b.textContent=text;}
+document.getElementById('clearHistoryBtn').addEventListener('click',()=>{try{localStorage.removeItem(HISTORY_KEY);}catch(e){}renderHistoryAll();});renderHistoryAll();
+
+/* ---------------- Bitiş ---------------- */
+function finishQuiz(){
+  clearInterval(timerInterval);stopSpeech();quizCard.style.display='none';progressTrack.style.display='none';checkpointCard.style.display='none';resultCard.classList.add('show');
+  const r=computeRubric();document.getElementById('finalScore').textContent=r.overall+' / 100';document.getElementById('cCorrect').textContent=counts.correct;document.getElementById('cClose').textContent=counts.close;document.getElementById('cWrong').textContent=counts.wrong;
+  let msg=r.overall>=85?'Güçlü bir mülakat performansı gösterdin.':(r.overall>=65?'Genel performansın iyi; birkaç alanı güçlendirerek daha dengeli hale getirebilirsin.':'Bilgi ve ifade alanlarında hedefli tekrar yapman faydalı olur.'); document.getElementById('finalSub').textContent=msg;
+  const contentText=questionMode==='knowledge_only'?'Sadece Bilgi Soruları':'Kişiye Özel + Bilgi';
+  const engineLabel=questionMode==='knowledge_only'?'Soru kaynağı':'6 kaynaklı motor';
+  resultMeta.innerHTML='<b>Mod:</b> '+(interviewMode==='real'?'Gerçek Mülakat':'Çalışma Modu')+' &nbsp;·&nbsp; <b>İçerik:</b> '+contentText+' &nbsp;·&nbsp; <b>Komisyon:</b> '+COMMISSION_LABELS[commissionLevel]+' &nbsp;·&nbsp; <b>Takip/Hafıza sorusu:</b> '+followUpCount+' &nbsp;·&nbsp; <b>Kontrollü bilmiyorum:</b> '+controlledUnknownCount+' &nbsp;·&nbsp; <b>Bilgi ham puanı:</b> '+knowledgeScore()+'<br><span style="display:inline-block;margin-top:7px"><b>'+engineLabel+':</b> '+engineSourceSummary()+'</span>';
+  renderRubric(r);renderIntroResult();renderUnknownResult();renderCatBreakdown();renderReviewList(document.getElementById('finalReviewList'));
+  saveHistoryItem({ts:new Date().toISOString(),overall:r.overall,mode:interviewMode,questionMode:questionMode,commission:commissionLevel,rubric:r,categories:categorySnapshot(),unknown:controlledUnknownCount,followUps:followUpCount,sources:{...sourceUsage}});renderHistoryAll();
+}
+function goHome(){clearInterval(timerInterval);stopSpeech();quizCard.style.display='none';checkpointCard.style.display='none';progressTrack.style.display='none';resultCard.classList.remove('show');sessionControls.style.display='none';scoreSegment.style.display='';scoreDivider.style.display='';qTotal.textContent=QUESTIONS.length;startCard.style.display='block';startCard.classList.add('show');renderHistoryAll();}
+document.getElementById('restartBtn').addEventListener('click',goHome);homeBtn.addEventListener('click',goHome);resetBtn.addEventListener('click',beginQuiz);
+
+</script>
+</body>
+</html>
